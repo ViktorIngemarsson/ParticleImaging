@@ -57,9 +57,9 @@ class Plane:
         #
         # See also Plane.
         if varargin is None:
-            s = pl.p0.size(varargin[1])
-        else:
             s =  pl.p0.size()
+        else:
+            s = pl.p0.size(varargin[1])
         return s
 
 
