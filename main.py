@@ -12,4 +12,4 @@ a = createImage()
 #def refraction(xDim, yDim, dropletRadius, posX, posY, posZ, distZ, rayDensity, refractiveIndexMedium1,
 
 
-refraction(2,2,2,0,0,0,10,1,1,1.2)
+refraction(2,2,2,0,0,5,10,1,1,1)
