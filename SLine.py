@@ -1,9 +1,10 @@
 import math
-import Vector
 import numpy as np
+
 
 def dotproduct(v1, v2):
     return sum((a * b) for a, b in zip(v1, v2))
+
 
 def length(v):
     return math.sqrt(dotproduct(v, v))
@@ -12,10 +13,19 @@ def length(v):
 def angle(v1, v2):
     return math.acos(dotproduct(v1, v2) / (length(v1) * length(v2)))
 
+
 class SLine:
     def __init__(self, p1, p2):
         self.p1 = p1
         self.p2 = p2
+
+    def disp(self):
+        print(self.p1.X)
+        print(self.p1.Y)
+        print(self.p1.Z)
+        print(self.p2.X)
+        print(self.p2.Y)
+        print(self.p2.Z)
 
     def translate(self, ln, dp):
         # TRANSLATE 3D translation of line set
@@ -33,7 +43,7 @@ class SLine:
         ln_t.p2 = ln_t.p2.translate(dp)
         return ln_t
 
-    def xrotation(self,ln, phi):
+    def xrotation(self, ln, phi):
         # XROTATION Rotation around x-axis of line set
         #
         # LNr = XROTATION(LN,phi) rotates set of lines LN around x-axis
@@ -46,7 +56,7 @@ class SLine:
         ln_r.p2 = ln_r.p2.xrotation(phi)
         return ln_r
 
-    def yrotation(self,ln,phi):
+    def yrotation(self, ln, phi):
         # YROTATION Rotation around y-axis of line set
         #
         # LNr = YROTATION(LN,phi) rotates set of lines LN around y-axis
@@ -59,7 +69,7 @@ class SLine:
         ln_r.p2 = ln_r.p2.yrotation(phi)
         return ln_r
 
-    def zrotation(self,ln,phi):
+    def zrotation(self, ln, phi):
         # ZROTATION Rotation around z-axis of line set
         #
         # LNr = ZROTATION(LN,phi) rotates set of lines LN around z-axis
@@ -98,7 +108,7 @@ class SLine:
             s = ln.p1.size(varargin[1])
         return s
 
-    def angle(self,ln1,ln2):
+    def angle(self, ln1, ln2):
         # ANGLE Angle (Components)
         #
         # PHI = ANGLE(LN1,LN2) calculates the angle between the set of
@@ -110,6 +120,7 @@ class SLine:
         return phi
 
     def versor(self, ln):
+        from Vector import Vector
         # VERSOR Unitary vector
         #
         # U = VERSOR(LN) returns the unit vector set corresponding to
@@ -119,12 +130,14 @@ class SLine:
         #
         # See also SLine.
 
-        v = Vector(np.zeros(ln.shape()), np.zeros(ln.shape()), np.zeros(ln.shape()), ln.p2.X - ln.p1.X, ln.p2.Y - ln.p1.Y,
-               ln.p2.Z - ln.p1.Z)
+        v = Vector(np.zeros(ln.shape()), np.zeros(ln.shape()), np.zeros(ln.shape()), ln.p2.X - ln.p1.X,
+                   ln.p2.Y - ln.p1.Y,
+                   ln.p2.Z - ln.p1.Z)
         u = v.normalize()
         return u
 
-    def tovector(self,ln):
+    def tovector(self, ln):
+        from Vector import Vector
         # TOVECTOR Line to vector
         #
         # V = TOVECTOR(LN) converts the set of lines LN into the set of

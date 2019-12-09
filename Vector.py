@@ -1,70 +1,70 @@
-import Point as Point
-from SLine import SLine
+from Point import Point
 import numpy as np
+import copy
 
-class Vector:
-    def __init__(self, xcomponent, ycomponent, zcomponent):
+
+class Vector(Point):  # Inherits from Superclass Point
+    def __init__(self, X, Y, Z, xcomponent, ycomponent, zcomponent):
+        super().__init__(X, Y, Z)
+        self.X = X
+        self.Y = Y
+        self.Z = Z
         self.Vx = xcomponent
         self.Vy = ycomponent
         self.Vz = zcomponent
 
-    def vector(self, x, y, z):
-        # VECTOR(X, Y, Z, Vx, Vy, Vz) constructs a set of vectorsa
-        # with coordinates x, y and z adn components Vx, Vy and Vz.
-        # X, Y, Z, Vx, Vy and Vz must be real scalar matrices with the same size.
-        #
-        # See also Vector, Point.
-        v = Point.Point(x, y, z)
-        v.Vx = self.Vx
-        v.Vy = self.Vy
-        v.Vz = self.Vz
-        return v
+    def disp(self):
+        print(self.X)
+        print(self.Y)
+        print(self.Z)
+        print(self.Vx)
+        print(self.Vy)
+        print(self.Vz)
 
-    @staticmethod
-    def xrotation(self, v, phi):
+    def xrotation(self, phi):
         # XROTATION Rotation around x - axis of vector set
         #
         # Vr = XROTATION(V, phi) rotates set of vectors V around x - axis
         # by an angle phi[rad].
         # It rotates both the coordinates X, Y and Z and the components Vx, Vy and Vz.
         # See also Vector.
+        v = copy.deepcopy(self)
 
-        v_r = Point(v,phi)
-        v_r.Vy = v.Vy*np.cos(phi) - v.Vz*np.sin(phi)
-        v_r.Vz = v.Vy*np.sin(phi) + v.Vz*np.cos(phi)
+        v_r = Point.xrotation(v, phi)
+        v_r.Vy = v.Vy * np.cos(phi) - v.Vz * np.sin(phi)
+        v_r.Vz = v.Vy * np.sin(phi) + v.Vz * np.cos(phi)
         return v_r
 
-    @staticmethod
-    def yrotation(self, v, phi):
+    def yrotation(self, phi):
         # YROTATION Rotation around x - axis of vector set
         #
         # Vr = YROTATION(V, phi) rotates set of vectors V around y - axis
         # by an angle phi[rad].
         # It rotates both the coordinates X, Y and Z and the components Vx, Vy and Vz.
         # See also Vector.
+        v = copy.deepcopy(self)
 
-        v_r = Point(v, phi)
+        v_r = Point.yrotation(v, phi)
         v_r.Vx = v.Vx * np.cos(phi) + v.Vz * np.sin(phi)
         v_r.Vz = -v.Vx * np.sin(phi) + v.Vz * np.cos(phi)
         return v_r
 
-    @staticmethod
-    def zrotation(self, v, phi):
+    def zrotation(self, phi):
         # ZROTATION Rotation around x - axis of vector set
         #
         # Vr = ZROTATION(V, phi) rotates set of vectors V around z - axis
         # by an angle phi[rad].
         # It rotates both the coordinates X, Y and Z and the components Vx, Vy and Vz.
         # See also Vector.
+        v = copy.deepcopy(self)
 
-        v_r = Point(v, phi)
+        v_r = Point.zrotation(v, phi)
         v_r.Vx = v.Vx * np.cos(phi) - v.Vy * np.sin(phi)
         v_r.Vy = v.Vx * np.sin(phi) + v.Vy * np.cos(phi)
 
         return v_r
 
-    @staticmethod
-    def uminus(v):
+    def uminus(self):
         # UMINUS Unitary minus(components)
         #
         # Vm = UMINUS(V) Unitary minus.
@@ -73,15 +73,14 @@ class Vector:
         #
         # See also Vector.
 
-        v_m = v
+        v_m = copy.deepcopy(self)
         v_m.Vx = -v_m.Vx
         v_m.Vy = -v_m.Vy
         v_m.Vz = -v_m.Vz
 
         return v_m
 
-    @staticmethod
-    def plus(self, v1, v2):
+    def plus(self, v2):
         # PLUS Binary addition(components)
         #
         # V = PLUS(V1, V2) Binary addition(V=V1 + V2).
@@ -91,15 +90,14 @@ class Vector:
         #
         # See also Vector.
 
-        v = v1
-        v.Vx = v1.Vx + v2.Vx
-        v.Vy = v1.Vy + v2.Vy
-        v.Vz = v1.Vz + v2.Vz
+        v = copy.deepcopy(self)
+        v.Vx = self.Vx + v2.Vx
+        v.Vy = self.Vy + v2.Vy
+        v.Vz = self.Vz + v2.Vz
 
         return v
 
-    @staticmethod
-    def minus(self, v1, v2):
+    def minus(self, v2):
         # PLUS Binary addition(components)
         #
         # V = MINUS(V1, V2) Binary subtraction(V=V1 - V2).
@@ -109,15 +107,14 @@ class Vector:
         #
         # See also Vector.
 
-        v = v1
-        v.Vx = v1.Vx - v2.Vx
-        v.Vy = v1.Vy - v2.Vy
-        v.Vz = v1.Vz - v2.Vz
+        v = copy.deepcopy(self)
+        v.Vx = self.Vx - v2.Vx
+        v.Vy = self.Vy - v2.Vy
+        v.Vz = self.Vz - v2.Vz
 
         return v
 
-    @staticmethod
-    def mtimes(self, a, b):
+    def mtimes(self, b):
         # MTIMES Vector product(components)
         #
         # V = MTIMES(V1, V2) Vector product(V=V1 * V2).
@@ -136,29 +133,30 @@ class Vector:
         # The coordinates X, Y and Z of V are the ones of V1.
         #
         # See also Vector.
+        a = copy.deepcopy(self)
 
-        if a.isinstance(Vector) & b.isinstance(Vector):
-            v1 = a
+        if isinstance(a, Vector) & isinstance(b, Vector):
+            v1 = copy.deepcopy(a)
             v2 = b
-            m = v1
-            m.Vx = np.dot(v1.Vy, v2.Vz)-np.dot(v1.Vz, v2.Vy)
-            m.Vy = -np.dot(v1.Vx, v2.Vz)+np.dot(v1.Vz, v2.Vx)
-            m.Vz = np.dot(v1.Vx, v2.Vy)-np.dot(v1.Vy, v2.Vx)
-        elif a.isinstance(Vector):
-            v1 = a
-            m = v1
-            m.X = m.X * np.ones([b.shape], dtype = int)
-            m.Y = m.Y * np.ones([b.shape], dtype = int)
-            m.Z = m.Z * np.ones([b.shape], dtype = int)
+            m = copy.deepcopy(v1)
+            m.Vx = np.dot(v1.Vy, v2.Vz) - np.dot(v1.Vz, v2.Vy)
+            m.Vy = -np.dot(v1.Vx, v2.Vz) + np.dot(v1.Vz, v2.Vx)
+            m.Vz = np.dot(v1.Vx, v2.Vy) - np.dot(v1.Vy, v2.Vx)
+        elif isinstance(a, Vector):
+            v1 = copy.deepcopy(a)
+            m = copy.deepcopy(v1)
+            m.X = m.X * np.ones([b.size()], dtype=int)
+            m.Y = m.Y * np.ones([b.size()], dtype=int)
+            m.Z = m.Z * np.ones([b.size()], dtype=int)
             m.Vx = np.dot(v1.Vx, b)
             m.Vy = np.dot(v1.Vy, b)
             m.Vz = np.dot(v1.Vz, b)
-        elif b.isinstance(Vector):
-            v2 = b
-            m = v2
-            m.X = m.X * np.ones([a.shape], dtype = int)
-            m.Y = m.Y * np.ones([a.shape], dtype = int)
-            m.Z = m.Z * np.ones([a.shape], dtype = int)
+        elif isinstance(b, Vector):
+            v2 = copy.deepcopy(b)
+            m = copy.deepcopy(v2)
+            m.X = m.X * np.ones([a.size()], dtype=int)
+            m.Y = m.Y * np.ones([a.size()], dtype=int)
+            m.Z = m.Z * np.ones([a.size()], dtype=int)
             m.Vx = np.dot(a, v2.Vx)
             m.Vy = np.dot(a, v2.Vy)
             m.Vz = np.dot(a, v2.Vz)
@@ -167,8 +165,7 @@ class Vector:
 
         return m
 
-    @staticmethod
-    def times(self, a, b):
+    def times(self, b):
         # TIMES Scalar product(components)
         #
         # M = TIMES(V1, V2) Scalar product(M=V1. * V2).
@@ -186,26 +183,27 @@ class Vector:
         # The coordinates X, Y and Z of V are the ones of V1.
         #
         # See also Vector.
+        a = copy.deepcopy(self)
 
-        if a.isinstance(Vector) & b.isinstance(Vector):
-            v1 = a
-            v2 = b
+        if isinstance(a, Vector) & isinstance(b, Vector):
+            v1 = copy.deepcopy(a)
+            v2 = copy.deepcopy(b)
             m = np.dot(v1.Vx, v2.Vx) + np.dot(v1.Vy, v2.Vy) + np.dot(v1.Vz, v2.Vz)
-        elif a.isinstance(Vector):
-            v1 = a
-            m = v1
-            m.X = m.X * np.ones([b.shape], dtype=int)
-            m.Y = m.Y * np.ones([b.shape], dtype=int)
-            m.Z = m.Z * np.ones([b.shape], dtype=int)
+        elif isinstance(a, Vector):
+            v1 = copy.deepcopy(a)
+            m = copy.deepcopy(v1)
+            m.X = m.X * np.ones([b.size()], dtype=int)
+            m.Y = m.Y * np.ones([b.size()], dtype=int)
+            m.Z = m.Z * np.ones([b.size()], dtype=int)
             m.Vx = np.dot(v1.Vx, b)
             m.Vy = np.dot(v1.Vy, b)
             m.Vz = np.dot(v1.Vz, b)
-        elif b.isinstance(Vector):
-            v2 = b
-            m = v2
-            m.X = m.X * np.ones([a.shape], dtype=int)  # om fel kanske detta ska göras med np.dot
-            m.Y = m.Y * np.ones([a.shape], dtype=int)
-            m.Z = m.Z * np.ones([a.shape], dtype=int)
+        elif isinstance(b, Vector):
+            v2 = copy.deepcopy(b)
+            m = copy.deepcopy(v2)
+            m.X = m.X * np.ones([a.size()], dtype=int)  # om fel kanske detta ska göras med np.dot
+            m.Y = m.Y * np.ones([a.size()], dtype=int)
+            m.Z = m.Z * np.ones([a.size()], dtype=int)
             m.Vx = np.dot(a, v2.Vx)
             m.Vy = np.dot(a, v2.Vy)
             m.Vz = np.dot(a, v2.Vz)
@@ -214,8 +212,7 @@ class Vector:
 
         return m
 
-    @staticmethod
-    def rdivide(self, v, b):
+    def rdivide(self, b):
         # RDIVIDE Right division(components)
         #
         # Vd = RDIVIDE(V, B) Right division(Vd=V. / B).
@@ -224,15 +221,14 @@ class Vector:
         #
         # See also Vector.
 
-        v_d = v
-        v_d.Vx = np.divide(v.Vx, b)
-        v_d.Vy = np.divide(v.Vy, b)
-        v_d.Vz = np.divide(v.Vz, b)
+        v_d = copy.deepcopy(self)
+        v_d.Vx = np.divide(self.Vx, b)
+        v_d.Vy = np.divide(self.Vy, b)
+        v_d.Vz = np.divide(self.Vz, b)
 
         return v_d
 
-    @staticmethod
-    def versor(self, v):
+    def versor(self):
         # VERSOR Unitary vector
         #
         # U = VERSOR(V) returns the unit vector set corresponding to
@@ -240,13 +236,14 @@ class Vector:
         # The coordinates X, Y and Z of U are the ones of V.
         #
         # See also Vector.
+        v = copy.deepcopy(self)
+        v_temp = np.array([v.Vx, v.Vy, v.Vz])
+        norm = np.linalg.norm(v_temp)
+        if norm == 0:
+            return v
+        return v.rdivide(norm)
 
-        u = v.normalize()  # tror inte detta kommer funkar för jag vet inte vad den gör...
-
-        return u
-
-    @staticmethod
-    def topoint(self, v):
+    def topoint(self):
         # TOPOINT Vector to point
         #
         # P = TOPOINT(V) converts the set of vectors V into the set of
@@ -254,13 +251,12 @@ class Vector:
         # components of V.
         #
         # See also Vector, Point.
+        v = copy.deepcopy(self)
 
-        p = Point(np.real(v.Vx), np.real(v.Vy), np.real(v.Vz))
+        return Point(np.real(v.Vx), np.real(v.Vy), np.real(v.Vz))
 
-        return p
-
-    @staticmethod
-    def toline(self, v):
+    def toline(self):
+        from SLine import SLine
         # TOLINE Vector to line
         #
         # LN = TOLINE(V) converts the set of vectors V into the set of
@@ -270,7 +266,6 @@ class Vector:
         # of the components of V.
         #
         # See also Vector, SLine.
+        v = copy.deepcopy(self)
 
-        ln = SLine(Point(v.X, v.Y, v.Z), Point(v.X+np.real(v.Vx), v.Y+np.real(v.Vy), v.Z+np.real(v.Vz)))
-
-        return ln
+        return SLine(Point(v.X, v.Y, v.Z), Point(v.X + np.real(v.Vx), v.Y + np.real(v.Vy), v.Z + np.real(v.Vz)))

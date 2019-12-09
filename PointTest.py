@@ -1,6 +1,8 @@
 from Point import Point
-from Vector import Vector
 
+# TODO: Testa det som innehållet Vector nedan. Rad 17 och 62
+
+#Test-object
 p = Point(1, 2, 3)
 
 # Disp

@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from Vector import Vector
 from SLine import SLine
 import copy
 
@@ -24,6 +23,7 @@ class Point:
         print(self.Z)
 
     def translate(self, dp):
+        from Vector import Vector
         p_t = copy.deepcopy(self)
         if isinstance(dp, Vector):
             p_t.X = p_t.X + dp.Vx
@@ -161,6 +161,7 @@ class Point:
         return SLine(Point(np.zeros(temp.size()), np.zeros(temp.size()), np.zeros(temp.size())), temp)
 
     def tovector(self):
+        from Vector import Vector
         temp = copy.deepcopy(self)
         return Vector(np.zeros(temp.size()), np.zeros(temp.size()), np.zeros(temp.size()), temp.X, temp.Y,
                       temp.Z)
