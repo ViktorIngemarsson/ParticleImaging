@@ -1,24 +1,14 @@
-import Point as Point
+from Point import Point
 from SLine import SLine
 import numpy as np
 
+
 class Vector:
-    def __init__(self, xcomponent, ycomponent, zcomponent):
+    def __init__(self, X, Y, Z, xcomponent, ycomponent, zcomponent):
+        self.point = Point(X, Y, Z)
         self.Vx = xcomponent
         self.Vy = ycomponent
         self.Vz = zcomponent
-
-    def vector(self, x, y, z):
-        # VECTOR(X, Y, Z, Vx, Vy, Vz) constructs a set of vectorsa
-        # with coordinates x, y and z adn components Vx, Vy and Vz.
-        # X, Y, Z, Vx, Vy and Vz must be real scalar matrices with the same size.
-        #
-        # See also Vector, Point.
-        v = Point.Point(x, y, z)
-        v.Vx = self.Vx
-        v.Vy = self.Vy
-        v.Vz = self.Vz
-        return v
 
     @staticmethod
     def xrotation(self, v, phi):
@@ -29,9 +19,9 @@ class Vector:
         # It rotates both the coordinates X, Y and Z and the components Vx, Vy and Vz.
         # See also Vector.
 
-        v_r = Point(v,phi)
-        v_r.Vy = v.Vy*np.cos(phi) - v.Vz*np.sin(phi)
-        v_r.Vz = v.Vy*np.sin(phi) + v.Vz*np.cos(phi)
+        v_r = Point(v, phi)
+        v_r.Vy = v.Vy * np.cos(phi) - v.Vz * np.sin(phi)
+        v_r.Vz = v.Vy * np.sin(phi) + v.Vz * np.cos(phi)
         return v_r
 
     @staticmethod
@@ -141,24 +131,24 @@ class Vector:
             v1 = a
             v2 = b
             m = v1
-            m.Vx = np.dot(v1.Vy, v2.Vz)-np.dot(v1.Vz, v2.Vy)
-            m.Vy = -np.dot(v1.Vx, v2.Vz)+np.dot(v1.Vz, v2.Vx)
-            m.Vz = np.dot(v1.Vx, v2.Vy)-np.dot(v1.Vy, v2.Vx)
+            m.Vx = np.dot(v1.Vy, v2.Vz) - np.dot(v1.Vz, v2.Vy)
+            m.Vy = -np.dot(v1.Vx, v2.Vz) + np.dot(v1.Vz, v2.Vx)
+            m.Vz = np.dot(v1.Vx, v2.Vy) - np.dot(v1.Vy, v2.Vx)
         elif a.isinstance(Vector):
             v1 = a
             m = v1
-            m.X = m.X * np.ones([b.shape], dtype = int)
-            m.Y = m.Y * np.ones([b.shape], dtype = int)
-            m.Z = m.Z * np.ones([b.shape], dtype = int)
+            m.X = m.X * np.ones([b.shape], dtype=int)
+            m.Y = m.Y * np.ones([b.shape], dtype=int)
+            m.Z = m.Z * np.ones([b.shape], dtype=int)
             m.Vx = np.dot(v1.Vx, b)
             m.Vy = np.dot(v1.Vy, b)
             m.Vz = np.dot(v1.Vz, b)
         elif b.isinstance(Vector):
             v2 = b
             m = v2
-            m.X = m.X * np.ones([a.shape], dtype = int)
-            m.Y = m.Y * np.ones([a.shape], dtype = int)
-            m.Z = m.Z * np.ones([a.shape], dtype = int)
+            m.X = m.X * np.ones([a.shape], dtype=int)
+            m.Y = m.Y * np.ones([a.shape], dtype=int)
+            m.Z = m.Z * np.ones([a.shape], dtype=int)
             m.Vx = np.dot(a, v2.Vx)
             m.Vy = np.dot(a, v2.Vy)
             m.Vz = np.dot(a, v2.Vz)
@@ -271,6 +261,6 @@ class Vector:
         #
         # See also Vector, SLine.
 
-        ln = SLine(Point(v.X, v.Y, v.Z), Point(v.X+np.real(v.Vx), v.Y+np.real(v.Vy), v.Z+np.real(v.Vz)))
+        ln = SLine(Point(v.X, v.Y, v.Z), Point(v.X + np.real(v.Vx), v.Y + np.real(v.Vy), v.Z + np.real(v.Vz)))
 
         return ln
