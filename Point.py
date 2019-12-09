@@ -20,15 +20,14 @@ class Point:
         print(self.X)
         print(self.Y)
         print(self.Z)
-        return
 
     def translate(self,dp):
         p_t = self
-        if  dp.isinstance(Vector):
+        if  isinstance(dp,Vector):
             p_t.X = p_t.X + dp.Vx
             p_t.Y = p_t.Y + dp.Vy
             p_t.Z = p_t.Z + dp.Vz
-        elif dp.isinstance(Point):
+        elif isinstance(dp,Point):
             p_t.X = p_t.X + dp.X
             p_t.Y = p_t.Y + dp.Y
             p_t.Z = p_t.Z + dp.Z
@@ -36,8 +35,8 @@ class Point:
 
     def xrotation(self,phi):
         p_r = self
-        p_r.Y = self.Y.dot(np.cos(phi)) - self.Z.dot(np.sin(phi))
-        p_r.Z = self.Y.dot(np.sin(phi)) + self.Z.dot(np.cos(phi))
+        p_r.Y = np.dot(self.Y,np.cos(phi)) - np.dot(self.Z,np.sin(phi))
+        p_r.Z = np.dot(self.Y,np.sin(phi)) + np.dot(self.Z,np.cos(phi))
         return p_r
 
     def yrotation(self,phi):
