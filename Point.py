@@ -56,6 +56,7 @@ class Point:
     def numel(self):
         return np.size(self.X)
 
+    # TODO: Borde vara shape, men det funkar inge bra
     def size(self, varargin=None):
         if varargin != None:
             return np.size(self.X, varargin[0])
@@ -73,36 +74,36 @@ class Point:
         p_m.Z = -p_m.Z
         return p_m
 
-    def plus(self, p1, p2):
-        p = p1
-        p.X = p1.X + p2.X
-        p.Y = p1.Y + p2.Y
-        p.Z = p1.Z + p2.Z
-        return p
+    def plus(self, p2):
+        p1 = copy.deepcopy(self)
+        p1.X = p1.X + p2.X
+        p1.Y = p1.Y + p2.Y
+        p1.Z = p1.Z + p2.Z
+        return p1
 
-    def minus(self, p1, p2):
-        p = p1
-        p.X = p1.X - p2.X
-        p.Y = p1.Y - p2.Y
-        p.Z = p1.Z - p2.Z
-        return p
+    def minus(self, p2):
+        p1 = copy.deepcopy(self)
+        p1.X = p1.X - p2.X
+        p1.Y = p1.Y - p2.Y
+        p1.Z = p1.Z - p2.Z
+        return p1
 
-    def mtimes(self, a, b):
-        if a.isinstance(Point) and b.isinstance(Point):
+    def mtimes(self, b):
+        a = copy.deepcopy(self)
+        if isinstance(a, Point) and isinstance(b, Point):
             p1 = a
             p2 = b
             m = p1
             m.X = np.dot(p1.Y, p2.Z) - np.dot(p1.Z, p2.Y)
             m.Y = np.dot(-p1.X, p2.Z) + np.dot(p1.Z, p2.X)
             m.Z = np.dot(p1.X, p2.Y) - np.dot(p1.Y, p2.X)
-        elif a.isinstance(Point):
+        elif isinstance(a, Point):
             p1 = a
             m = p1
             m.X = np.dot(p1.X, b)
             m.Y = np.dot(p1.Y, b)
             m.Z = np.dot(p1.Z, b)
-
-        elif b.isinstance(Point):
+        elif isinstance(b, Point):
             p2 = b
             m = p2
             m.X = np.dot(a, p2.X)
@@ -113,19 +114,20 @@ class Point:
 
         return m
 
-    def times(self, a, b):
-        if a.isinstance(Point) and b.isinstance(Point):
+    def times(self, b):
+        a = copy.deepcopy(self)
+        if isinstance(a, Point) and isinstance(b, Point):
             p1 = a
             p2 = b
             m = np.dot(p1.X, p2.X) + np.dot(p1.Y, p2.Y) + np.dot(p1.Z, p2.Z)
-        elif a.isinstance(Point):
+        elif isinstance(a, Point):
             p1 = a
             m = p1
             m.X = np.dot(p1.X, b)
             m.Y = np.dot(p1.Y, b)
             m.Z = np.dot(p1.Z, b)
 
-        elif b.isinstance(Point):
+        elif isinstance(b, Point):
             p2 = b
             m = p2
             m.X = np.dot(a, p2.X)
