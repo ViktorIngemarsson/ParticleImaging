@@ -56,11 +56,12 @@ class Point:
     def numel(self):
         return np.size(self.X)
 
-    def size(self, varargin):
-        if not varargin:
-            return np.shape(self.X, varargin[0])
+    def size(self, varargin=None):
+        if varargin != None:
+            return np.size(self.X, varargin[0])
+
         else:
-            return np.shape(self.X)
+            return np.size(self.X)
 
     def uplus(self):
         return self
