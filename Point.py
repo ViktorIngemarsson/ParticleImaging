@@ -37,20 +37,20 @@ class Point:
 
     def xrotation(self, phi):
         p_r = copy.deepcopy(self)
-        p_r.Y = np.dot(p_r.Y, np.cos(phi)) - np.dot(p_r.Z, np.sin(phi))
-        p_r.Z = np.dot(p_r.Y, np.sin(phi)) + np.dot(p_r.Z, np.cos(phi))
+        p_r.Y = np.dot(self.Y, np.cos(phi)) - np.dot(self.Z, np.sin(phi))
+        p_r.Z = np.dot(self.Y, np.sin(phi)) + np.dot(self.Z, np.cos(phi))
         return p_r
 
     def yrotation(self, phi):
         p_r = copy.deepcopy(self)
-        p_r.X = np.dot(p_r.X, np.cos(phi)) + np.dot(p_r.Z, np.sin(phi))
-        p_r.Z = np.dot(-p_r.X, np.sin(phi)) + np.dot(p_r.Z, np.cos(phi))
+        p_r.X = np.dot(self.X, np.cos(phi)) + np.dot(self.Z, np.sin(phi))
+        p_r.Z = np.dot(-self.X, np.sin(phi)) + np.dot(self.Z, np.cos(phi))
         return p_r
 
     def zrotation(self, phi):
         p_r = copy.deepcopy(self)
-        p_r.X = np.dot(p_r.X, np.cos(phi)) - np.dot(p_r.Y, np.sin(phi))
-        p_r.Y = np.dot(p_r.X, np.sin(phi)) + np.dot(p_r.Y, np.cos(phi))
+        p_r.X = np.dot(self.X, np.cos(phi)) - np.dot(self.Y, np.sin(phi))
+        p_r.Y = np.dot(self.X, np.sin(phi)) + np.dot(self.Y, np.cos(phi))
         return p_r
 
     def numel(self):
