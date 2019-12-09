@@ -6,7 +6,17 @@ from Point import Point
 from Plane import Plane
 from Transform import Transform
 from operator import itemgetter
+import math
 
+def dotproduct(v1, v2):
+    return sum((a * b) for a, b in zip(v1, v2))
+
+def length(v):
+    return math.sqrt(dotproduct(v, v))
+
+
+def angle(v1, v2):
+    return math.acos(dotproduct(v1, v2) / (length(v1) * length(v2)))
 
 class Ray:
     def __init__(self, v, P, pol):
@@ -263,8 +273,34 @@ class Ray:
 
         return res
 
+    def translate(self,r,dp):
+        # TRANSLATE 3D translation of ray set
+        #
+        # Rt = TRANSLATE(R,dP) translates set of rays R by dP.
+        #   If dP is a Point, the translation corresponds to the
+        #   coordinates X, Y and Z.
+        #   If dP is a Vector, the translation corresponds to the
+        #   components Vx, Vy and Vz.
+        #
+        # See also Ray, Point, Vector.
 
+        r_t = r
+        r_t.v = r.v.translate(dp)
+        r_t.pol = r.pol.translate(dp)
+        return r_t
 
+    def xrotation(self, r, phi):
+        # XROTATION Rotation around x-axis of ray set
+        #
+        # Rr = XROTATION(R,phi) rotates set of rays R around x-axis
+        #   by an angle phi [rad].
+        #
+        # See also Ray.
+
+        r_r = r
+        r_r.v = r.v.xrotation(phi)
+        r_r.pol = r.pol.xrotation(phi)
+        return r_r
 
     def yrotation(self, r, phi):
         # YROTATION Rotation around y-axis of ray set
