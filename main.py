@@ -1,5 +1,6 @@
 from Point import Point
 from Plane import Plane
+from SLine import SLine
 # def createImage():
 # print("This line will be printed.")
 #    return 3
@@ -17,10 +18,10 @@ from Plane import Plane
 
 # Unittest of plane
 
-p1 = Point(0, 0, 0)
-p2 = Point(1, 0, 0)
-p3 = Point(0, 1, 0)
-pl = Plane(p1, p2, p3)
+p1 = Point(2, 3, 5);
+p2 = Point(1, 1, 5);
+p3 = Point(2.4, 1, 7);
+pl = Plane(p1, p2, p3);
 
 pl.disp()
 
@@ -36,7 +37,14 @@ pl.disp()
 k = pl.xrotation(0.2)
 l = k.yrotation(0.22)
 o = l.zrotation(0.67)
-o.disp()
 
-l = o.numel()
-print(l)
+jil = o.numel()
+print(jil)
+print(o.size())
+
+p5 = Point(2, 6.2, 2)
+
+L = SLine(p1,p5)
+
+pl.intersectionpoint(L)
+
