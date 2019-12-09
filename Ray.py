@@ -1,15 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from Vector import Vector
-from SLine import SLine
+from Spherical import Spherical
 from Point import Point
 from Plane import Plane
 from Transform import Transform
 from operator import itemgetter
 import math
 
+
 def dotproduct(v1, v2):
     return sum((a * b) for a, b in zip(v1, v2))
+
 
 def length(v):
     return math.sqrt(dotproduct(v, v))
@@ -17,6 +19,7 @@ def length(v):
 
 def angle(v1, v2):
     return math.acos(dotproduct(v1, v2) / (length(v1) * length(v2)))
+
 
 class Ray:
     def __init__(self, v, P, pol):
@@ -33,7 +36,7 @@ class Ray:
     # TODO: I matlab så används nargin för att avgöra hur många input-argument functionen tar emot, hur gör vi det i python,
     #   och kan de olika funktionerna ta emot olika många inputs?
 
-    def snellslaw(self,r,s,n1,n2,n):
+    def snellslaw(self, r, s, n1, n2, n):
         if s.isinstance(Plane):
             pl = s
             # intersection between ray and plane
@@ -78,10 +81,18 @@ class Ray:
             # p3 = p2.zrotation(phi3); %
 
             # Rs and Ts(appliesto r3.pol.Vx)
-            [Rs, Ts, rs, ts] = Ray.rtcoeffs(theta_i, n1, n2)
+            output_dictS = Ray.rtcoeffs(theta_i, n1, n2)
+            Rs = output_dictS["Rs"]
+            Ts = output_dictS["Ts"]
+            rs = output_dictS["rs"]
+            ts = output_dictS["ts"]
 
             # Rp and Tp(r3.pol.Vy and Vz)
-            [Rp, Tp, rp, tp] = Ray.rtcoeffp(theta_i, n1, n2)
+            output_dictP = Ray.rtcoeffp(theta_i, n1, n2)
+            Rp = output_dictP["Rp"]
+            Tp = output_dictP["Tp"]
+            rp = output_dictP["rp"]
+            tp = output_dictP["tp"]
 
             # Reflected ray
             if r3.v.Z > 0:
@@ -89,18 +100,18 @@ class Ray:
             else:
                 r_r3 = -r3.xrotation(-2 * theta_i)
 
-            r_r3.pol.Vx = abs(np.dot(rs,r_r3.pol.Vx))
-            r_r3.pol.Vy = abs(np.dot(rp,r_r3.pol.Vy))
-            r_r3.pol.Vz = abs(np.dot(rp,r_r3.pol.Vz))
+            r_r3.pol.Vx = np.abs(np.dot(rs, r_r3.pol.Vx))
+            r_r3.pol.Vy = np.abs(np.dot(rp, r_r3.pol.Vy))
+            r_r3.pol.Vz = np.abs(np.dot(rp, r_r3.pol.Vz))
 
-            cs = np.divide((np.square(r3.pol.Vx)),np.square(r3.pol.norm()))
-            cp = np.divide((np.square(r3.pol.Vy)) + np.square(r3.pol.Vz),np.square(r3.pol.norm()))
-            R = np.dot(cs,Rs) + np.dot(cp,Rp)
+            cs = np.divide((np.square(r3.pol.Vx)), np.square(r3.pol.norm()))
+            cp = np.divide((np.square(r3.pol.Vy)) + np.square(r3.pol.Vz), np.square(r3.pol.norm()))
+            R = np.dot(cs, Rs) + np.dot(cp, Rp)
 
             r_r3.v.X = np.zeros(np.shape(r))
             r_r3.v.Y = np.zeros(np.shape(r))
             r_r3.v.Z = np.zeros(np.shape(r))
-            r_r3.P = np.dot(r.P,R)
+            r_r3.P = np.dot(r.P, R)
             r_r3.pol.X = np.zeros(np.shape(r))
             r_r3.pol.Y = np.zeros(np.shape(r))
             r_r3.pol.Z = np.zeros(np.shape(r))
@@ -115,16 +126,16 @@ class Ray:
                 r_t3.pol.Vy = -r_t3.pol.Vy
                 r_t3.pol.Vz = -r_t3.pol.Vz
 
-            r_t3.pol.Vx = np.dot(ts,r_t3.pol.Vx)
-            r_t3.pol.Vy = np.dot(tp,r_t3.pol.Vy)
-            r_t3.pol.Vz = np.dot(tp,r_t3.pol.Vz)
+            r_t3.pol.Vx = np.dot(ts, r_t3.pol.Vx)
+            r_t3.pol.Vy = np.dot(tp, r_t3.pol.Vy)
+            r_t3.pol.Vz = np.dot(tp, r_t3.pol.Vz)
 
             T = 1 - R
 
             r_t3.v.X = np.zeros(np.shape(r))
             r_t3.v.Y = np.zeros(np.shape(r))
             r_t3.v.Z = np.zeros(np.shape(r))
-            r_t3.P = np.dot(r.P,T)
+            r_t3.P = np.dot(r.P, T)
             r_t3.pol.X = np.zeros(np.shape(r))
             r_t3.pol.Y = np.zeros(np.shape(r))
             r_t3.pol.Z = np.zeros(np.shape(r))
@@ -133,20 +144,20 @@ class Ray:
             indices = [1, 2, 3]
             tir = [j for (i, j) in zip(np.imag(theta_t), indices) if i != 0]
             tir = [x - 1 for x in tir]
-            #tir = np.imag(theta_t) != 0
+            # tir = np.imag(theta_t) != 0
 
-            r_r3.P(tir) = r.P(tir)
-            r_r3.pol.Vx(tir) = np.abs(r_r3.pol.Vx(tir))
-            r_r3.pol.Vy(tir) = np.abs(r_r3.pol.Vy(tir))
-            r_r3.pol.Vz(tir) = np.abs(r_r3.pol.Vz(tir))
+            r_r3.P[tir] = r.P[tir]
+            r_r3.pol.Vx[tir] = np.abs(r_r3.pol.Vx[tir])
+            r_r3.pol.Vy[tir] = np.abs(r_r3.pol.Vy[tir])
+            r_r3.pol.Vz[tir] = np.abs(r_r3.pol.Vz[tir])
 
-            r_t3.P(tir) = 0
-            r_t3.v.Vx(tir) = np.real(r_t3.v.Vx(tir))
-            r_t3.v.Vy(tir) = np.real(r_t3.v.Vy(tir))
-            r_t3.v.Vz(tir) = np.real(r_t3.v.Vz(tir))
-            r_t3.pol.Vx(tir) = np.abs(r_t3.pol.Vx(tir))
-            r_t3.pol.Vy(tir) = np.abs(r_t3.pol.Vy(tir))
-            r_t3.pol.Vz(tir) = np.abs(r_t3.pol.Vz(tir))
+            r_t3.P[tir] = 0
+            r_t3.v.Vx[tir] = np.real(r_t3.v.Vx[tir])
+            r_t3.v.Vy[tir] = np.real(r_t3.v.Vy[tir])
+            r_t3.v.Vz[tir] = np.real(r_t3.v.Vz[tir])
+            r_t3.pol.Vx[tir] = np.abs(r_t3.pol.Vx[tir])
+            r_t3.pol.Vy[tir] = np.abs(r_t3.pol.Vy[tir])
+            r_t3.pol.Vz[tir] = np.abs(r_t3.pol.Vz[tir])
 
             # back rotation around z(-3)
             r_r4 = r_r3.zrotation(-phi3)
@@ -164,7 +175,7 @@ class Ray:
             r_r = r_r6.translate(p)
             r_t = r_t6.translate(p)
 
-        elif s.isinstance(Superficies):
+        elif s.isinstance(Spherical):
             # intersection between ray and sphere
             p = s.intersectionpoint(r, n)
 
@@ -174,7 +185,7 @@ class Ray:
             # tangent plane
             pl = Plane.perpto(ln, p)
 
-            #Snell's law
+            # Snell's law
             output = r.snellslaw(pl, n1, n2)
             r_r = output['r_r']
             r_t = output['r_t']
@@ -187,11 +198,11 @@ class Ray:
         }
 
     @staticmethod
-    def rtcoeffs(self,theta_i,n1,n2):
+    def rtcoeffs(theta_i, n1, n2):
         theta_t = np.arcsin(n1 / n2 * np.sin(theta_i))
 
-        rs = np.divide((n1 * np.cos(theta_i) - n2 * np.cos(theta_t)),(n1 * np.cos(theta_i) + n2 * np.cos(theta_t)))
-        ts = np.divide(2 * n1 * np.cos(theta_i),(n1 * np.cos(theta_i) + n2 * np.cos(theta_t)))
+        rs = np.divide((n1 * np.cos(theta_i) - n2 * np.cos(theta_t)), (n1 * np.cos(theta_i) + n2 * np.cos(theta_t)))
+        ts = np.divide(2 * n1 * np.cos(theta_i), (n1 * np.cos(theta_i) + n2 * np.cos(theta_t)))
 
         Rs = np.abs(np.square(rs))
         Ts = 1 - Rs
@@ -204,11 +215,11 @@ class Ray:
         }
 
     @staticmethod
-    def rtcoeffp(self,theta_i,n1,n2):
+    def rtcoeffp(theta_i, n1, n2):
         theta_t = np.arcsin(n1 / n2 * np.sin(theta_i))
 
-        rp = np.divide((n1 * np.cos(theta_t) - n2 * np.cos(theta_i)),(n1 * np.cos(theta_t) + n2 * np.cos(theta_i)))
-        tp = np.divide(2 * n1 * np.cos(theta_i),(n1 * np.cos(theta_t) + n2 * np.cos(theta_i)))
+        rp = np.divide((n1 * np.cos(theta_t) - n2 * np.cos(theta_i)), (n1 * np.cos(theta_t) + n2 * np.cos(theta_i)))
+        tp = np.divide(2 * n1 * np.cos(theta_i), (n1 * np.cos(theta_t) + n2 * np.cos(theta_i)))
 
         Rp = np.abs(np.square(rp))
         Tp = 1 - Rp
@@ -221,30 +232,28 @@ class Ray:
         }
 
     @staticmethod
-    def beam2rays(self,b):
-#        if nargin < 3
-#            z1 = 0;
-#            z2 = 1e-6;
-#        end
+    def beam2rays(b):
 
-        X = np.dot(b.r,np.cos(b.phi))
+        X = np.dot(b.r, np.cos(b.phi))
         Y = b.r.dot(np.sin(b.phi))
-        Z = 0 * b.r
-        Vx = 0 * b.r
-        Vy = 0 * b.r
+        Z = np.zeros(np.shape(b.r))
+        Vx = np.zeros(np.shape(b.r))
+        Vy = np.zeros(np.shape(b.r))
         Vz = np.ones(np.shape(b.r))
-        # TODO: Här vetefan vad jag ska skriva
-        v = Vector([X;X], [Y;Y], [Z;Z], [Vx;Vx], [Vy;Vy], [Vz;Vz])
+        v = Vector(np.array(X, X), np.array(Y, Y), np.array(Z, Z), np.array(Vx, Vx), np.array(Vy, Vy), np.array(Vz, Vz))
 
-        [Ex, Ey] = Transform.Pol2CarVector(b.phi, b.Ephi, b.Er)
-        # TODO: Här vetefan vad jag ska skriva
-        pol = Vector([X;X], [Y;Y], [Z;Z], [real(Ex);imag(Ex)], [real(Ey);imag(Ey)], 0 * [b.r;b.r])
+        output_dict = Transform.Pol2CarVector(b.phi, b.Ephi, b.Er)
+        Ex = output_dict["Ex"]
+        Ey = output_dict["Ey"]
+
+        pol = Vector(np.array(X, X), np.array(Y, Y), np.array(Z, Z), np.array(real(Ex), imag(Ex)),
+                     np.array(real(Ey), imag(Ey)), np.array(np.zeros(np.shape(b.r)), np.zeros(np.shape(b.r))))
 
         dr = b.r(1, 2) - b.r(1, 1)
         dphi = b.phi(2, 1) - b.phi(1, 1)
-        P = np.dot(b.intensity(),b.r) * dr * dphi
-        # TODO: Här vetefan vad jag ska skriva
-        P = [P. * np.abs(Ex). ^ 2. / (np.abs(Ex). ^ 2 + np.abs(Ey). ^ 2) P. * np.abs(Ey). ^ 2. / (np.abs(Ex). ^ 2 + np.abs(Ey). ^ 2)]
+        P = np.dot(b.intensity(), b.r) * dr * dphi
+        P = np.array(np.divide(np.dot(P, np.square(np.abs(Ex))), (np.square(np.abs(Ex)) + np.square(np.abs(Ey)))),
+                     np.divide(np.dot(P, np.square(np.abs(Ey))), (np.square(np.abs(Ex)) + np.square(np.abs(Ey)))))
 
         res = Ray(v, P, pol)
 
@@ -273,7 +282,7 @@ class Ray:
 
         return res
 
-    def translate(self,r,dp):
+    def translate(self, r, dp):
         # TRANSLATE 3D translation of ray set
         #
         # Rt = TRANSLATE(R,dP) translates set of rays R by dP.
