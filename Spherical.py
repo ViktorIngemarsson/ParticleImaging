@@ -2,7 +2,8 @@ import numpy as np
 from Point import Point
 from SLine import SLine
 
-class Plane:
+
+class Spherical:
     def __init__(self, centers, radiuses):
         self.c = centers
         self.r = radiuses
@@ -75,7 +76,7 @@ class Plane:
 
         return sp.c.size
 
-    def size(self,sp,varargin):
+    def size(self, sp, varargin):
         # SIZE Size of the sphere set
         #
         # S = SIZE(SP) returns a two-element row vector with the number
@@ -92,8 +93,7 @@ class Plane:
             s = sp.c.size(varargin[1])
         return s
 
-
-    def intersectionpoint(self,sp,d,n):
+    def intersectionpoint(self, sp, d, n):
         # INTERSECTIONPOINT Intersection point between sphere and line/vector/ray
         #
         #  P = INTERSECTIONPOINT(SP,D,N) calculates intersection points
@@ -111,13 +111,13 @@ class Plane:
         lnc = ln.p2 - ln.p1
 
         A = np.multiply(lnc, lnc)
-        B = np.multiply(np.multiply(2, ln.p1-sp.c), lnc)
-        C = np.multiply(ln.p1-sp.c, ln.p1-sp.c)-np.power(sp.r, 2)
+        B = np.multiply(np.multiply(2, ln.p1 - sp.c), lnc)
+        C = np.multiply(ln.p1 - sp.c, ln.p1 - sp.c) - np.power(sp.r, 2)
 
         delta = np.power(B, 2) - np.multiply(4, np.multiply(A, C))
 
         if n == 1:
-            t1 = np.divide(-B - np.sqrt(delta), 2*A)
+            t1 = np.divide(-B - np.sqrt(delta), 2 * A)
         else:
             t1 = np.divide(-B + np.sqrt(delta), 2 * A)
 
@@ -130,7 +130,7 @@ class Plane:
 
         return p
 
-    def perpline(self,sp,p):
+    def perpline(self, sp, p):
         # PERPLINE Line perpendicular to sphere passing by point
         #
         # LN = PERPLINE(SP,P) calculates the line set LN perpendicular
@@ -151,4 +151,3 @@ class Plane:
         pl = Plane.perpto(sp.perpline(p), p)
 
         return pl
-

@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from Vector import Vector
 from SLine import SLine
+import copy
+
 
 class Point:
     def __init__(self, X, Y, Z):
@@ -9,7 +11,7 @@ class Point:
         self.Y = Y
         self.Z = Z
 
-    def plot(self,varargin):
+    def plot(self, varargin):
         # A 3d plot of the point (self), with the properties varargin.
         # TODO: Make the option varargin have an impact on the plotting
         ax = plt.axes(projection='3d')
@@ -21,40 +23,40 @@ class Point:
         print(self.Y)
         print(self.Z)
 
-    def translate(self,dp):
-        p_t = self
-        if  isinstance(dp,Vector):
+    def translate(self, dp):
+        p_t = copy.deepcopy(self)
+        if isinstance(dp, Vector):
             p_t.X = p_t.X + dp.Vx
             p_t.Y = p_t.Y + dp.Vy
             p_t.Z = p_t.Z + dp.Vz
-        elif isinstance(dp,Point):
+        elif isinstance(dp, Point):
             p_t.X = p_t.X + dp.X
             p_t.Y = p_t.Y + dp.Y
             p_t.Z = p_t.Z + dp.Z
         return p_t
 
-    def xrotation(self,phi):
-        p_r = self
-        p_r.Y = np.dot(self.Y,np.cos(phi)) - np.dot(self.Z,np.sin(phi))
-        p_r.Z = np.dot(self.Y,np.sin(phi)) + np.dot(self.Z,np.cos(phi))
+    def xrotation(self, phi):
+        p_r = copy.deepcopy(self)
+        p_r.Y = np.dot(p_r.Y, np.cos(phi)) - np.dot(p_r.Z, np.sin(phi))
+        p_r.Z = np.dot(p_r.Y, np.sin(phi)) + np.dot(p_r.Z, np.cos(phi))
         return p_r
 
-    def yrotation(self,phi):
-        p_r = self
-        p_r.X = self.X.dot(np.cos(phi)) + self.Z.dot(np.sin(phi))
-        p_r.Z = -self.X.dot(np.sin(phi)) + self.Z.dot(np.cos(phi))
+    def yrotation(self, phi):
+        p_r = copy.deepcopy(self)
+        p_r.X = np.dot(p_r.X, np.cos(phi)) + np.dot(p_r.Z, np.sin(phi))
+        p_r.Z = np.dot(-p_r.X, np.sin(phi)) + np.dot(p_r.Z, np.cos(phi))
         return p_r
 
-    def zrotation(self,phi):
-        p_r = self
-        p_r.X = self.X.dot(np.cos(phi)) - self.Y.dot(np.sin(phi))
-        p_r.Y = self.X.dot(np.sin(phi)) + self.Y.dot(np.cos(phi))
+    def zrotation(self, phi):
+        p_r = copy.deepcopy(self)
+        p_r.X = np.dot(p_r.X, np.cos(phi)) - np.dot(p_r.Y, np.sin(phi))
+        p_r.Y = np.dot(p_r.X, np.sin(phi)) + np.dot(p_r.Y, np.cos(phi))
         return p_r
 
     def numel(self):
         return np.size(self.X)
 
-    def size(self,varargin):
+    def size(self, varargin):
         if not varargin:
             return np.shape(self.X, varargin[0])
         else:
@@ -64,95 +66,96 @@ class Point:
         return self
 
     def uminus(self):
-        p_m = self
+        p_m = copy.deepcopy(self)
         p_m.X = -p_m.X
         p_m.Y = -p_m.Y
         p_m.Z = -p_m.Z
         return p_m
 
-    def plus(self,p1,p2):
+    def plus(self, p1, p2):
         p = p1
         p.X = p1.X + p2.X
         p.Y = p1.Y + p2.Y
         p.Z = p1.Z + p2.Z
         return p
 
-    def minus(self,p1,p2):
+    def minus(self, p1, p2):
         p = p1
         p.X = p1.X - p2.X
         p.Y = p1.Y - p2.Y
         p.Z = p1.Z - p2.Z
         return p
 
-    def mtimes(self,a,b):
+    def mtimes(self, a, b):
         if a.isinstance(Point) and b.isinstance(Point):
             p1 = a
             p2 = b
             m = p1
-            m.X = p1.Y.dot(p2.Z) - p1.Z.dot(p2.Y)
-            m.Y = -p1.X.dot(p2.Z) + p1.Z.dot(p2.X)
-            m.Z = p1.X.dot(p2.Y) - p1.Y.dot(p2.X)
+            m.X = np.dot(p1.Y, p2.Z) - np.dot(p1.Z, p2.Y)
+            m.Y = np.dot(-p1.X, p2.Z) + np.dot(p1.Z, p2.X)
+            m.Z = np.dot(p1.X, p2.Y) - np.dot(p1.Y, p2.X)
         elif a.isinstance(Point):
             p1 = a
             m = p1
-            m.X = p1.X.dot(b)
-            m.Y = p1.Y.dot(b)
-            m.Z = p1.Z.dot(b)
+            m.X = np.dot(p1.X, b)
+            m.Y = np.dot(p1.Y, b)
+            m.Z = np.dot(p1.Z, b)
 
         elif b.isinstance(Point):
             p2 = b
             m = p2
-            m.X = a.dot(p2.X)
-            m.Y = a.dot(p2.Y)
-            m.Z = a.dot(p2.Z)
+            m.X = np.dot(a, p2.X)
+            m.Y = np.dot(a, p2.Y)
+            m.Z = np.dot(a, p2.Z)
         else:
-            m = a.dot(b)
+            m = np.dot(a, b)
 
         return m
 
-    def times(self,a,b):
+    def times(self, a, b):
         if a.isinstance(Point) and b.isinstance(Point):
             p1 = a
             p2 = b
-            m = p1.X.dot(p2.X) + p1.Y.dot(p2.Y) + p1.Z.dot(p2.Z)
+            m = np.dot(p1.X, p2.X) + np.dot(p1.Y, p2.Y) + np.dot(p1.Z, p2.Z)
         elif a.isinstance(Point):
             p1 = a
             m = p1
-            m.X = p1.X.dot(b)
-            m.Y = p1.Y.dot(b)
-            m.Z = p1.Z.dot(b)
+            m.X = np.dot(p1.X, b)
+            m.Y = np.dot(p1.Y, b)
+            m.Z = np.dot(p1.Z, b)
 
         elif b.isinstance(Point):
             p2 = b
             m = p2
-            m.X = a.dot(p2.X)
-            m.Y = a.dot(p2.Y)
-            m.Z = a.dot(p2.Z)
+            m.X = np.dot(a, p2.X)
+            m.Y = np.dot(a, p2.Y)
+            m.Z = np.dot(a, p2.Z)
 
         else:
-            m = a.dot(b)
+            m = np.dot(a, b)
         return m
 
-    def rdivide(self,p,b):
+    def rdivide(self, p, b):
         p_d = p
-        p_d.X = np.divide(p.X,b)
-        p_d.Y = np.divide(p.Y,b)
-        p_d.Z = np.divide(p.Z,b)
+        p_d.X = np.divide(p.X, b)
+        p_d.Y = np.divide(p.Y, b)
+        p_d.Z = np.divide(p.Z, b)
         return p_d
 
     def norm(self):
         return np.linalg.norm(self)
 
     def normalize(self):
-        return np.divide(self,self.norm())
+        return np.divide(self, self.norm())
 
-    def angle(self,p1,p2):
+    def angle(self, p1, p2):
         p1 = p1.normalize()
         p2 = p2.normalize()
         return np.real(np.arccos(p1.dot(p2)))
 
     def toline(self):
-        return SLine(Point(np.zeros(np.shape(self)),np.zeros(np.shape(self)),np.zeros(np.shape(self))),self)
+        return SLine(Point(np.zeros(np.shape(self)), np.zeros(np.shape(self)), np.zeros(np.shape(self))), self)
 
     def tovector(self):
-        return Vector(np.zeros(np.shape(self)),np.zeros(np.shape(self)),np.zeros(np.shape(self)),self.X,self.Y,self.Z)
+        return Vector(np.zeros(np.shape(self)), np.zeros(np.shape(self)), np.zeros(np.shape(self)), self.X, self.Y,
+                      self.Z)
