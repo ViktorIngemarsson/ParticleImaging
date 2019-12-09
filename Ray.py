@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from Vector import Vector
-from SLine import SLine
+from Spherical import Spherical
 from Point import Point
 from Plane import Plane
 from Transform import Transform
@@ -175,7 +175,7 @@ class Ray:
             r_r = r_r6.translate(p)
             r_t = r_t6.translate(p)
 
-        elif s.isinstance(Superficies):
+        elif s.isinstance(Spherical):
             # intersection between ray and sphere
             p = s.intersectionpoint(r, n)
 
