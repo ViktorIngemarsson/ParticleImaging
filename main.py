@@ -1,6 +1,5 @@
 from Point import Point
 from Plane import Plane
-
 # def createImage():
 # print("This line will be printed.")
 #    return 3
@@ -34,6 +33,8 @@ kl.disp()
 print('jk')
 pl.disp()
 k = pl.xrotation(0.2)
-l = k.yrotation(0.22)
-o = l.zrotation(0.67)
+k.disp()
+#l = k.yrotation(0.22)
+#o = l.zrotation(0.67)
+#o.disp()
 

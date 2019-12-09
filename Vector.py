@@ -1,4 +1,4 @@
-from Point import Point
+#from Point import Point
 from SLine import SLine
 import numpy as np
 
