@@ -56,7 +56,7 @@ class Plane:
         return pl_r
 
     def numel(self):
-        return self.p0.size
+        return self.p0.size()
 
     def size(self, varargin = None):
         # SIZE Size of the plane set
@@ -85,8 +85,8 @@ class Plane:
 
         ln = d
 
-        c1 = np.subtract(self.p1, self.p0)
-        c2 = np.subtract(self.p2, self.p0)
+        c1 = self.p1.minus(self.p0)
+        c2 = self.p2.minus(self.p0)
 
         c0 = np.multiply(c1, c2)
 
