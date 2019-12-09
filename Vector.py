@@ -1,4 +1,4 @@
-from Point import Point
+import Point as Point
 from SLine import SLine
 import numpy as np
 
@@ -14,7 +14,7 @@ class Vector:
         # X, Y, Z, Vx, Vy and Vz must be real scalar matrices with the same size.
         #
         # See also Vector, Point.
-        v = Point(x, y, z)
+        v = Point.Point(x, y, z)
         v.Vx = self.Vx
         v.Vy = self.Vy
         v.Vz = self.Vz

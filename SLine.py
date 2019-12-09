@@ -1,5 +1,5 @@
 import math
-from Vector import Vector
+import Vector
 import numpy as np
 
 def dotproduct(v1, v2):
