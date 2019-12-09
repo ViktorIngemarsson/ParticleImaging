@@ -58,7 +58,7 @@ class Plane:
     def numel(self):
         return self.p0.size
 
-    def size(self, varargin):
+    def size(self, varargin = None):
         # SIZE Size of the plane set
         #
         # S = SIZE(PL) returns a two-element row vector with the number

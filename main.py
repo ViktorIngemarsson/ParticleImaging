@@ -16,6 +16,7 @@ from Plane import Plane
 
 
 # Unittest of plane
+
 p1 = Point(0, 0, 0)
 p2 = Point(1, 0, 0)
 p3 = Point(0, 1, 0)
@@ -33,8 +34,9 @@ kl.disp()
 print('jk')
 pl.disp()
 k = pl.xrotation(0.2)
-k.disp()
-#l = k.yrotation(0.22)
-#o = l.zrotation(0.67)
-#o.disp()
+l = k.yrotation(0.22)
+o = l.zrotation(0.67)
+o.disp()
 
+l = o.numel()
+print(l)
