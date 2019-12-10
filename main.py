@@ -1,40 +1,46 @@
-from Spherical import Spherical
 from Point import Point
-from SLine import SLine
+from Vector import Vector
+from Ray import Ray
+from ParticleSpherical import ParticleSpherical
+import numpy as np
 
-p = Point(0, 0, 0)
-a = Spherical(p, 2)
-a.disp()
+# Parameters
+# Medium
+nm = 1.33  # Medium refractive index
 
-dp = Point(1, 0, 0)
-b = a.translate(dp)
-b.disp()
+# Particle
+R = 1e-6  # Particle radius [m]
+nP = 1.50  # Particle refractive index
+c = Point(0, 0, 0)  # Particle center [m]
 
-phi = 45
-c = b.xrotation(phi)
-c.disp()
+# Initialization
+# Particle
+bead = ParticleSpherical(c, R, nm, np)
 
-d = c.yrotation(phi)
-d.disp()
+theta = 0.5 #% [0: 1:89.9]./ 180 * np.pi
 
-e = d.zrotation(phi)
-e.disp()
+# Ray
+v = Vector(-2 * R, R * np.sin(theta), 0, 1, 0.2, 0.2) # Direction
+P = 1 # Power[W]
+pol = Vector(0, 0, 0, 0, 1, 1)
+pol = v.mtimes(pol)
+pol = pol.versor() # Polarization
+r = Ray(v, P, pol)
 
-f = e.numel()
-print(f)
+# Scattered rays
+s = bead.scattering(r, 1e-12, 6);
 
-v = None
-g = e.size(v)
-print(g)
+# Scattering coefficients
+#f = bead.force(r, 1e-12, 6);
 
+#s[0].v.plot()
+#s[1].v.plot()
 
-#dl = SLine(p, dp)
-#nn = 1
-#h = e.intersectionpoint(dl, nn)
-#h.disp()
+s[0].v.plot_multiple_vectors(np.asarray(s))
 
-p3 = Point(0, 0, 3)
-i = e.perpline(p3)
+#for ray in s:
+#    ray.v.plot()
 
 
-# Unittest of plane
+#kl.disp()
+

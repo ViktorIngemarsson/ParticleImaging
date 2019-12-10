@@ -1,6 +1,6 @@
 from Spherical import Spherical
 import copy
-import numpy as np
+#import numpy as np
 import math
 
 class ParticleSpherical:
@@ -76,4 +76,5 @@ class ParticleSpherical:
             if c[n + 1]['r_r'].P < r.P * err or math.isnan(c[n + 1]['r_r'].P):
                 break
         return c
+
 

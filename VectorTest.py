@@ -27,3 +27,11 @@ print("topoint")
 v.topoint().disp()
 print("toline")
 v.toline().disp()
+
+print("Plotting")
+vPlot = Vector(1,1,1,1,1,1)
+vPlot2 = Vector(3,2,5,2,2,4)
+vPlot3 = Vector(3,4,4,6,7,1)
+
+vPlot.plot_multiple_vectors([vPlot2,vPlot3])
+

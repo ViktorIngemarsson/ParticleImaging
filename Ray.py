@@ -7,6 +7,7 @@ from Plane import Plane
 from Transform import Transform
 from operator import itemgetter
 import math
+import copy
 
 
 def dotproduct(v1, v2):
@@ -36,8 +37,9 @@ class Ray:
     # TODO: I matlab så används nargin för att avgöra hur många input-argument functionen tar emot, hur gör vi det i python,
     #   och kan de olika funktionerna ta emot olika många inputs?
 
-    def snellslaw(self, r, s, n1, n2, n):
-        if s.isinstance(Plane):
+    def snellslaw(self, s, n1, n2, n):
+        r = copy.deepcopy(self)
+        if isinstance(s, Plane):
             pl = s
             # intersection between ray and plane
             p = pl.intersectionpoint(r)
@@ -175,7 +177,7 @@ class Ray:
             r_r = r_r6.translate(p)
             r_t = r_t6.translate(p)
 
-        elif s.isinstance(Spherical):
+        elif isinstance(s, Spherical):
             # intersection between ray and sphere
             p = s.intersectionpoint(r, n)
 
@@ -397,7 +399,7 @@ class Ray:
 
         return r.v.versor()
 
-    def toline(self, r):
+    def toline(self):
         # TOLINE Ray to line
         #
         # LN = TOLINE(R) converts the set of rays R into the set of
@@ -407,5 +409,6 @@ class Ray:
         #   of the initial points and of the components of R.
         #
         # See also Ray, SLine.
-
+        r = copy.deepcopy(self)
         return r.v.toline()
+

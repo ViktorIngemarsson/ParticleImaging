@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from SLine import SLine
 import copy
+from mpl_toolkits.mplot3d import axes3d, Axes3D
 
 
 class Point:
@@ -10,11 +11,16 @@ class Point:
         self.Y = Y
         self.Z = Z
 
-    def plot(self, varargin):
+    def plot(self, varargin = None):
         # A 3d plot of the point (self), with the properties varargin.
         # TODO: Make the option varargin have an impact on the plotting
-        ax = plt.axes(projection='3d')
-        ax.scatter3D(self.X, self.Y, self.Z, c=self.Z, cmap='Greens');
+        #ax = plt.add_subplot(111, projection='3d's)
+        fig = plt.figure()
+        #ax = fig.add_subplot(111, projection='3d')
+        ax = Axes3D(fig)
+        #ax = fig.axes(projection='3d')
+        ax.quiver(self.X, self.Y, self.Z)
+        plt.show()
         return
 
     def disp(self):
@@ -165,3 +171,4 @@ class Point:
         temp = copy.deepcopy(self)
         return Vector(np.zeros(temp.size()), np.zeros(temp.size()), np.zeros(temp.size()), temp.X, temp.Y,
                       temp.Z)
+
