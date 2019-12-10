@@ -1,6 +1,6 @@
 import math
 import numpy as np
-
+import copy
 
 def dotproduct(v1, v2):
     return sum((a * b) for a, b in zip(v1, v2))
@@ -27,7 +27,7 @@ class SLine:
         print(self.p2.Y)
         print(self.p2.Z)
 
-    def translate(self, ln, dp):
+    def translate(self, dp):
         # TRANSLATE 3D translation of line set
         #
         # LNt = TRANSLATE(LN,dP) translates set of lines LN by dP.
@@ -37,13 +37,13 @@ class SLine:
         #   components Vx, Vy and Vz.
         #
         # See also SLine, Point, Vector.
-
+        ln = copy.deepcopy(self)
         ln_t = ln
         ln_t.p1 = ln_t.p1.translate(dp)
         ln_t.p2 = ln_t.p2.translate(dp)
         return ln_t
 
-    def xrotation(self, ln, phi):
+    def xrotation(self, phi):
         # XROTATION Rotation around x-axis of line set
         #
         # LNr = XROTATION(LN,phi) rotates set of lines LN around x-axis
@@ -51,12 +51,13 @@ class SLine:
         #
         # See also SLine.
 
+        ln = copy.deepcopy(self)
         ln_r = ln
         ln_r.p1 = ln_r.p1.xrotation(phi)
         ln_r.p2 = ln_r.p2.xrotation(phi)
         return ln_r
 
-    def yrotation(self, ln, phi):
+    def yrotation(self, phi):
         # YROTATION Rotation around y-axis of line set
         #
         # LNr = YROTATION(LN,phi) rotates set of lines LN around y-axis
@@ -64,12 +65,13 @@ class SLine:
         #
         # See also SLine.
 
+        ln = copy.deepcopy(self)
         ln_r = ln
         ln_r.p1 = ln_r.p1.yrotation(phi)
         ln_r.p2 = ln_r.p2.yrotation(phi)
         return ln_r
 
-    def zrotation(self, ln, phi):
+    def zrotation(self, phi):
         # ZROTATION Rotation around z-axis of line set
         #
         # LNr = ZROTATION(LN,phi) rotates set of lines LN around z-axis
@@ -77,21 +79,23 @@ class SLine:
         #
         # See also SLine.
 
+        ln = copy.deepcopy(self)
+
         ln_r = ln
         ln_r.p1 = ln_r.p1.zrotation(phi)
         ln_r.p2 = ln_r.p2.zrotation(phi)
         return ln_r
 
-    def numel(self, ln):
+    def numel(self):
         # NUMEL umber of lines
         #
         # N = NUMEL(LN) number of lines in set LN.
         #
         # See also SLine.
-
+        ln = copy.deepcopy(self)
         return ln.p1.size
 
-    def size(self, ln, varargin):
+    def size(self, varargin):
         # SIZE Size of line set
         #
         # S = SIZE(LN) returns a two-element row vector with the number
@@ -101,25 +105,25 @@ class SLine:
         #   by the scalar DIM in the line set LN.
         #
         # See also SLine.
-
+        ln = copy.deepcopy(self)
         if varargin is None:
             s = ln.p1.size()
         else:
             s = ln.p1.size(varargin[1])
         return s
 
-    def angle(self, ln1, ln2):
+    def angle(self,  ln2):
         # ANGLE Angle (Components)
         #
         # PHI = ANGLE(LN1,LN2) calculates the angle between the set of
         #   lines LN1 and LN2.
         #
         # See also SLine.
-
+        ln1 = copy.deepcopy(self)
         phi = angle(ln1.p2 - ln1.p1, ln2.p2 - ln2.p1)
         return phi
 
-    def versor(self, ln):
+    def versor(self):
         from Vector import Vector
         # VERSOR Unitary vector
         #
@@ -129,14 +133,14 @@ class SLine:
         #   point of LN.
         #
         # See also SLine.
-
+        ln = copy.deepcopy(self)
         v = Vector(np.zeros(ln.shape()), np.zeros(ln.shape()), np.zeros(ln.shape()), ln.p2.X - ln.p1.X,
                    ln.p2.Y - ln.p1.Y,
                    ln.p2.Z - ln.p1.Z)
         u = v.normalize()
         return u
 
-    def tovector(self, ln):
+    def tovector(self):
         from Vector import Vector
         # TOVECTOR Line to vector
         #
@@ -147,6 +151,6 @@ class SLine:
         #   coordinates of the first and second point of LN.
         #
         # See also SLine, Vector.
-
+        ln = copy.deepcopy(self)
         v = Vector(ln.p1.X, ln.p1.Y, ln.p1.Z, ln.p2.X - ln.p1.X, ln.p2.Y - ln.p1.Y, ln.p2.Z - ln.p1.Z)
         return v

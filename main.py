@@ -1,19 +1,40 @@
+from Spherical import Spherical
 from Point import Point
-from Plane import Plane
 from SLine import SLine
-# def createImage():
-# print("This line will be printed.")
-#    return 3
 
-# def displayImage():
-# print("Should print image")
+p = Point(0, 0, 0)
+a = Spherical(p, 2)
+a.disp()
 
-# a = createImage()
+dp = Point(1, 0, 0)
+b = a.translate(dp)
+b.disp()
 
-# def refraction(xDim, yDim, dropletRadius, posX, posY, posZ, distZ, rayDensity, refractiveIndexMedium1,
+phi = 45
+c = b.xrotation(phi)
+c.disp()
+
+d = c.yrotation(phi)
+d.disp()
+
+e = d.zrotation(phi)
+e.disp()
+
+f = e.numel()
+print(f)
+
+v = None
+g = e.size(v)
+print(g)
 
 
-# refraction(2,2,2,0,0,5,10,1,1,1)
+#dl = SLine(p, dp)
+#nn = 1
+#h = e.intersectionpoint(dl, nn)
+#h.disp()
+
+p3 = Point(0, 0, 3)
+i = e.perpline(p3)
 
 
 # Unittest of plane
