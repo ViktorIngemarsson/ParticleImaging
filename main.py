@@ -38,35 +38,3 @@ i = e.perpline(p3)
 
 
 # Unittest of plane
-
-p1 = Point(2, 3, 5);
-p2 = Point(1, 1, 5);
-p3 = Point(2.4, 1, 7);
-pl = Plane(p1, p2, p3);
-
-pl.disp()
-
-pl.xrotation(0.2).disp()
-
-p3 = Point(3, 1, 7)
-
-kl = pl.translate(p3)
-
-kl.disp()
-print('jk')
-pl.disp()
-k = pl.xrotation(0.2)
-l = k.yrotation(0.22)
-o = l.zrotation(0.67)
-
-jil = o.numel()
-print(jil)
-print(o.size())
-
-p5 = Point(2, 6.2, 2)
-
-L = SLine(p1,p5)
-
-pl.intersectionpoint(L)
-
-
