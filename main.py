@@ -15,7 +15,7 @@ c = Point(0, 0, 0)  # Particle center [m]
 
 # Initialization
 # Particle
-bead = ParticleSpherical(c, R, nm, np)
+bead = ParticleSpherical(c, R, nm, nP)
 
 theta = 0.5 #% [0: 1:89.9]./ 180 * np.pi
 
@@ -28,7 +28,7 @@ pol = pol.versor() # Polarization
 r = Ray(v, P, pol)
 
 # Scattered rays
-s = bead.scattering(r, 1e-12, 6);
+s = bead.scattering(r, 1e-12, 6)
 
 # Scattering coefficients
 #f = bead.force(r, 1e-12, 6);

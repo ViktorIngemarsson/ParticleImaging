@@ -2,17 +2,6 @@ import math
 import numpy as np
 import copy
 
-def dotproduct(v1, v2):
-    return sum((a * b) for a, b in zip(v1, v2))
-
-
-def length(v):
-    return math.sqrt(dotproduct(v, v))
-
-
-def angle(v1, v2):
-    return math.acos(dotproduct(v1, v2) / (length(v1) * length(v2)))
-
 
 class SLine:
     def __init__(self, p1, p2):
@@ -120,7 +109,7 @@ class SLine:
         #
         # See also SLine.
         ln1 = copy.deepcopy(self)
-        phi = angle(ln1.p2 - ln1.p1, ln2.p2 - ln2.p1)
+        phi = ln1.p2.minus(ln1.p1).angle(ln2.p2.minus(ln2.p1))
         return phi
 
     def versor(self):

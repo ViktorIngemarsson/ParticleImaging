@@ -10,18 +10,6 @@ import math
 import copy
 
 
-def dotproduct(v1, v2):
-    return sum((a * b) for a, b in zip(v1, v2))
-
-
-def length(v):
-    return math.sqrt(dotproduct(v, v))
-
-
-def angle(v1, v2):
-    return math.acos(dotproduct(v1, v2) / (length(v1) * length(v2)))
-
-
 class Ray:
     def __init__(self, v, P, pol):
         # v       directions (Vector)
@@ -48,7 +36,7 @@ class Ray:
             perp = pl.perpline(p)
 
             # Incidence angle
-            theta_i = angle(r.toline(), perp)
+            theta_i = r.toline().angle(perp)
             if theta_i > np.pi / 2:
                 theta_i = np.pi - theta_i
 
@@ -56,9 +44,9 @@ class Ray:
             theta_t = np.arcsin(n1 / n2 * np.sin(theta_i))
 
             # translation to origin(0)
-            r0 = r.translate(-p)
+            r0 = r.translate(p.uminus())
             # pl0 = pl.translate(-p); %
-            perp0 = perp.translate(-p)
+            perp0 = perp.translate(p.uminus())
             # p0 = p.translate(-p); %
 
             # rotation around z(1)
@@ -98,9 +86,9 @@ class Ray:
 
             # Reflected ray
             if r3.v.Z > 0:
-                r_r3 = -r3.xrotation(2 * theta_i)
+                r_r3 = r3.xrotation(2 * theta_i).uminus()
             else:
-                r_r3 = -r3.xrotation(-2 * theta_i)
+                r_r3 = r3.xrotation(-2 * theta_i).uminus()
 
             r_r3.pol.Vx = np.abs(np.dot(rs, r_r3.pol.Vx))
             r_r3.pol.Vy = np.abs(np.dot(rp, r_r3.pol.Vy))
@@ -120,11 +108,11 @@ class Ray:
 
             # transmitted ray
             if r3.v.Z > 0:
-                r_t3 = -r3.xrotation(-np.pi + theta_i - theta_t)
+                r_t3 = r3.xrotation(-np.pi + theta_i - theta_t).uminus()
                 r_t3.pol.Vy = -r_t3.pol.Vy
                 r_t3.pol.Vz = -r_t3.pol.Vz
             else:
-                r_t3 = -r3.xrotation(np.pi - theta_i + theta_t)
+                r_t3 = r3.xrotation(np.pi - theta_i + theta_t).uminus()
                 r_t3.pol.Vy = -r_t3.pol.Vy
                 r_t3.pol.Vz = -r_t3.pol.Vz
 
@@ -143,23 +131,23 @@ class Ray:
             r_t3.pol.Z = np.zeros(np.shape(r))
 
             # ManagesTIR
-            indices = [1, 2, 3]
-            tir = [j for (i, j) in zip(np.imag(theta_t), indices) if i != 0]
-            tir = [x - 1 for x in tir]
+            # indices = [1, 2, 3]
+            # tir = [j for (i, j) in zip(np.imag(theta_t), indices) if i != 0]
+            # tir = [x - 1 for x in tir]
+            if np.imag(theta_t) != 0:
             # tir = np.imag(theta_t) != 0
+                r_r3.P = r.P
+                r_r3.pol.Vx = np.abs(r_r3.pol.Vx)
+                r_r3.pol.Vy = np.abs(r_r3.pol.Vy)
+                r_r3.pol.Vz = np.abs(r_r3.pol.Vz)
 
-            r_r3.P[tir] = r.P[tir]
-            r_r3.pol.Vx[tir] = np.abs(r_r3.pol.Vx[tir])
-            r_r3.pol.Vy[tir] = np.abs(r_r3.pol.Vy[tir])
-            r_r3.pol.Vz[tir] = np.abs(r_r3.pol.Vz[tir])
-
-            r_t3.P[tir] = 0
-            r_t3.v.Vx[tir] = np.real(r_t3.v.Vx[tir])
-            r_t3.v.Vy[tir] = np.real(r_t3.v.Vy[tir])
-            r_t3.v.Vz[tir] = np.real(r_t3.v.Vz[tir])
-            r_t3.pol.Vx[tir] = np.abs(r_t3.pol.Vx[tir])
-            r_t3.pol.Vy[tir] = np.abs(r_t3.pol.Vy[tir])
-            r_t3.pol.Vz[tir] = np.abs(r_t3.pol.Vz[tir])
+                r_t3.P = 0
+                r_t3.v.Vx = np.real(r_t3.v.Vx)
+                r_t3.v.Vy = np.real(r_t3.v.Vy)
+                r_t3.v.Vz = np.real(r_t3.v.Vz)
+                r_t3.pol.Vx = np.abs(r_t3.pol.Vx)
+                r_t3.pol.Vy = np.abs(r_t3.pol.Vy)
+                r_t3.pol.Vz = np.abs(r_t3.pol.Vz)
 
             # back rotation around z(-3)
             r_r4 = r_r3.zrotation(-phi3)
@@ -188,7 +176,7 @@ class Ray:
             pl = Plane.perpto(ln, p)
 
             # Snell's law
-            output = r.snellslaw(pl, n1, n2)
+            output = r.snellslaw(pl, n1, n2, 1)
             r_r = output['r_r']
             r_t = output['r_t']
             perp = output['perp']
@@ -284,7 +272,8 @@ class Ray:
 
         return res
 
-    def translate(self, r, dp):
+    def translate(self, dp):
+
         # TRANSLATE 3D translation of ray set
         #
         # Rt = TRANSLATE(R,dP) translates set of rays R by dP.
@@ -294,39 +283,40 @@ class Ray:
         #   components Vx, Vy and Vz.
         #
         # See also Ray, Point, Vector.
+        r = copy.deepcopy(self)
 
-        r_t = r
+        r_t = copy.deepcopy(r)
         r_t.v = r.v.translate(dp)
         r_t.pol = r.pol.translate(dp)
         return r_t
 
-    def xrotation(self, r, phi):
+    def xrotation(self, phi):
         # XROTATION Rotation around x-axis of ray set
         #
         # Rr = XROTATION(R,phi) rotates set of rays R around x-axis
         #   by an angle phi [rad].
         #
         # See also Ray.
-
+        r = copy.deepcopy(self)
         r_r = r
         r_r.v = r.v.xrotation(phi)
         r_r.pol = r.pol.xrotation(phi)
         return r_r
 
-    def yrotation(self, r, phi):
+    def yrotation(self, phi):
         # YROTATION Rotation around y-axis of ray set
         #
         # Rr = YROTATION(R,phi) rotates set of rays R around y-axis
         #   by an angle phi [rad].
         #
         # See also Ray.
-
+        r = copy.deepcopy(self)
         r_r = r
         r_r.v = r.v.yrotation(phi)
         r_r.pol = r.pol.yrotation(phi)
         return r_r
 
-    def zrotation(self, r, phi):
+    def zrotation(self, phi):
         # ZROTATION Rotation around z-axis of ray set
         #
         # Rr = ZROTATION(R,phi) rotates set of rays R around z-axis
@@ -334,21 +324,24 @@ class Ray:
         #
         # See also Ray.
 
+        r = copy.deepcopy(self)
+
         r_r = r
         r_r.v = r.v.zrotation(phi)
         r_r.pol = r.pol.zrotation(phi)
         return r_r
 
-    def numel(self, r):
+    def numel(self):
         # NUMEL Number of rays
         #
         # N = NUMEL(R) number of rays in set R.
         #
         # See also Ray.
+        r = copy.deepcopy(self)
 
         return r.v.size
 
-    def size(self, r, varargin):
+    def size(self, varargin):
         # SIZE Size of the ray set
         #
         # S = SIZE(R) returns a two-element row vector with the number
@@ -358,14 +351,14 @@ class Ray:
         #   by the scalar DIM in the ray set R.
         #
         # See also Ray.
-
+        r = copy.deepcopy(self)
         if varargin.size > 0:
             s = r.v.size(varargin[1])
         else:
             s = r.v.size()
         return s
 
-    def uminus(self, r):
+    def uminus(self):
         # UMINUS Unitary minus (components)
         #
         # Rm = UMINUS(R) Unitary minus (Rm = -R).
@@ -373,22 +366,22 @@ class Ray:
         #   The points of application and polarizations are left unchanged.
         #
         # See also Ray.
-
+        r = copy.deepcopy(self)
         r_m = r
-        r_m.v = -r_m.v
+        r_m.v = r_m.v.uminus()
         return r_m
 
-    def angle(self, r1, r2):
+    def angle(self, r2):
         # ANGLE Angle (coordinates)
         #
         # PHI = ANGLE(R1,R2) calculates the angle between the set of
         #   rays R1 and R2.
         #
         # See also Ray.
+        r1 = copy.deepcopy(self)
+        return r1.v.angle(r2.v)
 
-        return angle(r1.v, r2.v)
-
-    def versor(self, r):
+    def versor(self):
         # VERSOR Unitary vector
         #
         # U = VERSOR(R) returns the unit vector set corresponding to
@@ -396,7 +389,7 @@ class Ray:
         #   The coordinates of U are the points of application of R.
         #
         # See also Ray, Vector.
-
+        r = copy.deepcopy(self)
         return r.v.versor()
 
     def toline(self):
@@ -411,4 +404,3 @@ class Ray:
         # See also Ray, SLine.
         r = copy.deepcopy(self)
         return r.v.toline()
-
