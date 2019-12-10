@@ -1,7 +1,7 @@
 import numpy as np
-import Point
-import SLine
-
+from Point import Point
+from SLine import SLine
+import copy
 
 class Plane:
     def __init__(self, point0, point1, point2):
@@ -10,15 +10,15 @@ class Plane:
         self.p2 = point2
 
     def disp(self):
-        print(self.p0.X, 1, self.numel())
-        print(self.p0.Y, 1, self.numel())
-        print(self.p0.Z, 1, self.numel())
-        print(self.p1.X, 1, self.numel())
-        print(self.p1.Y, 1, self.numel())
-        print(self.p1.Z, 1, self.numel())
-        print(self.p2.X, 1, self.numel())
-        print(self.p2.Y, 1, self.numel())
-        print(self.p2.Z, 1, self.numel())
+        print(self.p0.X)
+        print(self.p0.Y)
+        print(self.p0.Z)
+        print(self.p1.X)
+        print(self.p1.Y)
+        print(self.p1.Z)
+        print(self.p2.X)
+        print(self.p2.Y)
+        print(self.p2.Z)
 
     def translate(self, dp):
         # TRANSLATE 3D translation of plane set
@@ -28,37 +28,37 @@ class Plane:
         #   If dP is a Vector, the translation corresponds to the
         #   components Vx, Vy and Vz.
         ## See also Plane, Point, Vector.
-        pl_t = self
-        pl_t.p0 = self.p0.translate(dp)
-        pl_t.p1 = self.p1.translate(dp)
-        pl_t.p2 = self.p2.translate(dp)
+        pl_t = copy.deepcopy(self)
+        pl_t.p0 = pl_t.p0.translate(dp)
+        pl_t.p1 = pl_t.p1.translate(dp)
+        pl_t.p2 = pl_t.p2.translate(dp)
         return pl_t
 
     def xrotation(self, phi):
-        pl_r = self
-        pl_r.p0 = self.p0.xrotation(phi)
-        pl_r.p1 = self.p1.xrotation(phi)
-        pl_r.p2 = self.p2.xrotation(phi)
+        pl_r = copy.deepcopy(self)
+        pl_r.p0 = pl_r.p0.xrotation(phi)
+        pl_r.p1 = pl_r.p1.xrotation(phi)
+        pl_r.p2 = pl_r.p2.xrotation(phi)
         return pl_r
 
-    def yrotation(self, pl, phi):
-        pl_r = pl
-        pl_r.p0 = pl.p0.yrotation(phi)
-        pl_r.p1 = pl.p1.yrotation(phi)
-        pl_r.p2 = pl.p2.yrotation(phi)
+    def yrotation(self, phi):
+        pl_r = copy.deepcopy(self)
+        pl_r.p0 = pl_r.p0.yrotation(phi)
+        pl_r.p1 = pl_r.p1.yrotation(phi)
+        pl_r.p2 = pl_r.p2.yrotation(phi)
         return pl_r
 
-    def zrotation(self, pl, phi):
-        pl_r = pl
-        pl_r.p0 = pl.p0.zrotation(phi)
-        pl_r.p1 = pl.p1.zrotation(phi)
-        pl_r.p2 = pl.p2.zrotation(phi)
+    def zrotation(self, phi):
+        pl_r = copy.deepcopy(self)
+        pl_r.p0 = pl_r.p0.zrotation(phi)
+        pl_r.p1 = pl_r.p1.zrotation(phi)
+        pl_r.p2 = pl_r.p2.zrotation(phi)
         return pl_r
 
     def numel(self):
         return self.p0.size
 
-    def size(self, pl, varargin):
+    def size(self, varargin):
         # SIZE Size of the plane set
         #
         # S = SIZE(PL) returns a two-element row vector with the number
@@ -69,12 +69,12 @@ class Plane:
         #
         # See also Plane.
         if varargin is None:
-            s = pl.p0.size()
+            s = self.p0.size()
         else:
-            s = pl.p0.size(varargin[1])
+            s = self.p0.size(varargin[1])
         return s
 
-    def intersectionpoint(self, pl, d):
+    def intersectionpoint(self, d):
         # INTERSECTIONPOINT Intersection point between plane and line/vector/ray
         #
         # P = INTERSECTIONPOINT(PL,D) calculates intersection Points
@@ -85,19 +85,19 @@ class Plane:
 
         ln = d
 
-        c1 = np.subtract(pl.p1, pl.p0)
-        c2 = np.subtract(pl.p2, pl.p0)
+        c1 = np.subtract(self.p1, self.p0)
+        c2 = np.subtract(self.p2, self.p0)
 
         c0 = np.multiply(c1, c2)
 
         c = np.subtract(ln.p2, ln.p1)
 
-        t = np.multiply(c0, np.divide(np.subtract(pl.p0, ln.p1), np.dot(c0, c)))
+        t = np.multiply(c0, np.divide(np.subtract(self.p0, ln.p1), np.dot(c0, c)))
 
         p = np.add(ln.p1, np.multiply(t, c))
         return p
 
-    def perpline(self, pl, p):
+    def perpline(self, p):
         # PERPLINE Line perpendicular to plane passing by point
         #
         # LN = PERPLINE(PL,P) calculates the line set LN perpendicular
@@ -105,8 +105,8 @@ class Plane:
         #
         # See also Plane.
 
-        c1 = np.subtract(pl.p1, pl.p0)
-        c2 = np.subtract(pl.p2, pl.p0)
+        c1 = np.subtract(self.p1, self.p0)
+        c2 = np.subtract(self.p2, self.p0)
 
         c0 = c1 * c2
 
