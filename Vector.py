@@ -1,7 +1,8 @@
 from Point import Point
 import numpy as np
 import copy
-
+from mpl_toolkits.mplot3d import axes3d, Axes3D
+import matplotlib.pyplot as plt
 
 class Vector(Point):  # Inherits from Superclass Point
     def __init__(self, X, Y, Z, xcomponent, ycomponent, zcomponent):
@@ -20,6 +21,30 @@ class Vector(Point):  # Inherits from Superclass Point
         print(self.Vx)
         print(self.Vy)
         print(self.Vz)
+
+    def plot(self ,varargin = None):
+        fig = plt.figure()
+        ax = Axes3D(fig)
+        ax.quiver(self.X, self.Y, self.Z, self.Vx, self.Vy, self.Vz, length=0.1, normalize=True)
+        plt.show()
+
+        return
+    def plot_multiple_vectors(self , moarVectors):
+        fig = plt.figure()
+        ax = Axes3D(fig)
+        ax.quiver(self.X, self.Y, self.Z, self.Vx, self.Vy, self.Vz, length=0.1, normalize=True)
+        for vec in moarVectors:
+            ax.quiver(vec.X, vec.Y, vec.Z, vec.Vx, vec.Vy, vec.Vz, length=0.1, normalize=True)
+
+        u, v = np.mgrid[0:2 * np.pi:20j, 0:np.pi:10j]
+        x = np.cos(u) * np.sin(v)
+        y = np.sin(u) * np.sin(v)
+        z = np.cos(v)
+        radius = 1
+        ax.plot_surface(np.multiply(x,radius), np.multiply(y,radius), np.multiply(z,radius), rstride=1, cstride=1, color="g", alpha=0.5, linewidth=0)
+        plt.show()
+
+        return
 
     def xrotation(self, phi):
         # XROTATION Rotation around x - axis of vector set
@@ -269,3 +294,4 @@ class Vector(Point):  # Inherits from Superclass Point
         v = copy.deepcopy(self)
 
         return SLine(Point(v.X, v.Y, v.Z), Point(v.X + np.real(v.Vx), v.Y + np.real(v.Vy), v.Z + np.real(v.Vz)))
+

@@ -1,4 +1,5 @@
 from Point import Point
+import numpy as np
 
 # TODO: Testa det som innehållet Vector nedan. Rad 17 och 62
 
@@ -59,3 +60,7 @@ p.toline()
 # # tovector
 print("tovector:")
 # p.tovector()
+print("Plotting")
+#pPlot = Point([1,2], [2,3], [3,4])
+#p.plot()
+

@@ -134,12 +134,12 @@ class Plane:
         #
         # See also Plane, Point, SLine.
 
-        plp0 = Point(np.multiply(p.X, np.ones(ln.shape())), np.multiply(p.Y, np.ones(ln.shape())),
-                     np.multiply(p.Z, np.ones(ln.shape())))
-        plp1 = Point(np.multiply(ln.p1.X, np.ones(p.shape())), np.multiply(ln.p1.Y, np.ones(p.shape())),
-                     np.multiply(ln.p1.Z, np.ones(p.shape())))
-        plp2 = Point(np.multiply(ln.p2.X, np.ones(p.shape())), np.multiply(ln.p2.Y, np.ones(p.shape())),
-                     np.multiply(ln.p2.Z, np.ones(p.shape())))
+        plp0 = Point(np.multiply(p.X, np.ones(ln.size())), np.multiply(p.Y, np.ones(ln.size())),
+                     np.multiply(p.Z, np.ones(ln.size())))
+        plp1 = Point(np.multiply(ln.p1.X, np.ones(p.size())), np.multiply(ln.p1.Y, np.ones(p.size())),
+                     np.multiply(ln.p1.Z, np.ones(p.size())))
+        plp2 = Point(np.multiply(ln.p2.X, np.ones(p.size())), np.multiply(ln.p2.Y, np.ones(p.size())),
+                     np.multiply(ln.p2.Z, np.ones(p.size())))
         pl = Plane(plp0, plp1, plp2)
 
         return pl
