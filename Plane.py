@@ -3,6 +3,7 @@ from Point import Point
 from SLine import SLine
 import copy
 
+
 class Plane:
     def __init__(self, point0, point1, point2):
         self.p0 = point0
@@ -58,7 +59,7 @@ class Plane:
     def numel(self):
         return self.p0.size()
 
-    def size(self, varargin = None):
+    def size(self, varargin=None):
         # SIZE Size of the plane set
         #
         # S = SIZE(PL) returns a two-element row vector with the number
@@ -82,20 +83,24 @@ class Plane:
         #   If D is parallel to PL, the coordiantes of P are NaN.
         #
         # See also Plane, Point, SLine, Vector, Ray.
+        pl = copy.deepcopy(self)
 
-        ln = d
+        if isinstance(d, SLine):
+            ln = copy.deepcopy(d)
+        else:
+            ln = d.toline()
 
-        c1 = self.p1.minus(self.p0)
-        c2 = self.p2.minus(self.p0)
+        c1 = pl.p1.minus(pl.p0)
+        c2 = pl.p2.minus(pl.p0)
 
-        c0 = np.multiply(c1, c2)
+        c0 = c1.mtimes(c2)
 
-        c = np.subtract(ln.p2, ln.p1)
+        c = ln.p2.minus(ln.p1)
 
-        t = np.multiply(c0, np.divide(np.subtract(self.p0, ln.p1), np.dot(c0, c)))
+        t = c0.times(pl.p0.minus(ln.p1)) / (c0.times(c))  # pl.p0.minus(ln.p1)   (c0.mtimes(c))
 
-        p = np.add(ln.p1, np.multiply(t, c))
-        return p
+        # p = np.add(ln.p1, np.multiply(t, c))
+        return ln.p1.plus(c.times(t))
 
     def perpline(self, p):
         # PERPLINE Line perpendicular to plane passing by point
@@ -104,16 +109,18 @@ class Plane:
         #   to the plane set PL and passing by the point set P.
         #
         # See also Plane.
+        pl = copy.deepcopy(self)
 
-        c1 = np.subtract(self.p1, self.p0)
-        c2 = np.subtract(self.p2, self.p0)
+        c1 = pl.p1.minus(pl.p0)
+        pl = copy.deepcopy(self)
+        c2 = pl.p2.minus(pl.p0)
 
-        c0 = c1 * c2
+        c0 = c1.mtimes(c2)
 
-        lnp1 = Point(np.multiply(p.X, np.ones(c0.shape())), np.multiply(p.Y, np.ones(c0.shape())),
-                     np.multiply(p.Z, np.ones(c0.shape())))
+        lnp1 = Point(np.multiply(p.X, np.ones(c0.size())), np.multiply(p.Y, np.ones(c0.size())),
+                     np.multiply(p.Z, np.ones(c0.size())))
 
-        lnp2 = lnp1 + c0
+        lnp2 = lnp1.plus(c0)
 
         ln = SLine(lnp1, lnp2)
 
