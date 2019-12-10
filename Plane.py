@@ -1,6 +1,6 @@
 import numpy as np
-import Point
-import SLine
+from Point import Point
+from SLine import SLine
 
 
 class Plane:
@@ -10,15 +10,15 @@ class Plane:
         self.p2 = point2
 
     def disp(self):
-        print(self.p0.X, 1, self.numel())
-        print(self.p0.Y, 1, self.numel())
-        print(self.p0.Z, 1, self.numel())
-        print(self.p1.X, 1, self.numel())
-        print(self.p1.Y, 1, self.numel())
-        print(self.p1.Z, 1, self.numel())
-        print(self.p2.X, 1, self.numel())
-        print(self.p2.Y, 1, self.numel())
-        print(self.p2.Z, 1, self.numel())
+        print(self.p0.X)
+        print(self.p0.Y)
+        print(self.p0.Z)
+        print(self.p1.X)
+        print(self.p1.Y)
+        print(self.p1.Z)
+        print(self.p2.X)
+        print(self.p2.Y)
+        print(self.p2.Z)
 
     def translate(self, dp):
         # TRANSLATE 3D translation of plane set
@@ -146,28 +146,28 @@ class Plane:
         #
         # See also Plane, Sline, Point.
 
-        ln.p1.X = np.multiply(ln.p1.X, np.ones(p.shape()))
-        ln.p1.Y = np.multiply(ln.p1.Y, np.ones(p.shape()))
-        ln.p1.Z = np.multiply(ln.p1.Z, np.ones(p.shape()))
-        ln.p2.X = np.multiply(ln.p2.X, np.ones(p.shape()))
-        ln.p2.Y = np.multiply(ln.p2.Y, np.ones(p.shape()))
-        ln.p2.Z = np.multiply(ln.p2.Z, np.ones(p.shape()))
+        ln.p1.X = np.multiply(ln.p1.X, np.ones(np.shape(p)))
+        ln.p1.Y = np.multiply(ln.p1.Y, np.ones(np.shape(p)))
+        ln.p1.Z = np.multiply(ln.p1.Z, np.ones(np.shape(p)))
+        ln.p2.X = np.multiply(ln.p2.X, np.ones(np.shape(p)))
+        ln.p2.Y = np.multiply(ln.p2.Y, np.ones(np.shape(p)))
+        ln.p2.Z = np.multiply(ln.p2.Z, np.ones(np.shape(p)))
 
-        p.X = np.multiply(p.X, np.ones(ln.shape()))
-        p.Y = np.multiply(p.Y, np.ones(ln.shape()))
-        p.Z = np.multiply(p.Z, np.ones(ln.shape()))
+        p.X = np.multiply(p.X, np.ones(np.shape(ln)))
+        p.Y = np.multiply(p.Y, np.ones(np.shape(ln)))
+        p.Z = np.multiply(p.Z, np.ones(np.shape(ln)))
 
-        c0 = ln.translate(-ln.p1).p2
+        c0 = ln.translate(ln.p1.uminus).p2
 
-        Xt = np.zeros(c0.shape())
-        Yt = np.zeros(c0.shape())
-        Zt = np.ones(c0.shape())
+        Xt = np.zeros(np.shape(c0))
+        Yt = np.zeros(np.shape(c0))
+        Zt = np.ones(np.shape(c0))
         Xt[np.power(c0.Z, 2) > np.multiply(100, (np.add(np.power(c0.X, 2), np.power(c0.Y, 2))))] = 1
         Zt[np.power(c0.Z, 2) > np.multiply(100, np.add(np.power(c0.X, 2), np.power(c0.Y, 2)))] = 0
-        c1 = c0 * Point(Xt, Yt, Zt)
+        c1 = c0.mtimes(Point(Xt, Yt, Zt))
 
-        c2 = c0 * c1
+        c2 = c0.mtimes(c1)
 
-        pl = Plane(p, p + c1, p + c2)
+        pl = Plane(p, p.plus(c1), p.plus(c2))
 
         return pl

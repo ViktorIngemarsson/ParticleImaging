@@ -1,6 +1,7 @@
 import numpy as np
 from Point import Point
 from SLine import SLine
+from Plane import Plane
 import copy
 
 class Spherical:
@@ -94,11 +95,12 @@ class Spherical:
 
         sp = copy.deepcopy(self)
 
-        if varargin is None:
-            s = sp.c.size()
+        if varargin != None:
+            s = np.shape(np.asarray(self.c), varargin[0])
+            return s
         else:
-            s = sp.c.size(varargin[1])
-        return s #  detta kan vara fel om man behöver både antal raden och kolloner
+            s = np.shape(np.asarray(self.c))
+            return s
 
 
     def intersectionpoint(self, d, n):
@@ -113,16 +115,16 @@ class Spherical:
 
         sp = copy.deepcopy(self)
 
-        if d.isinstance(SLine):
+        if isinstance(d, SLine):
             ln = d
         else:
             ln = d.toline()
 
-        lnc = ln.p2 - ln.p1
+        lnc = ln.p2.minus(ln.p1)
 
-        A = np.multiply(lnc, lnc)
-        B = np.multiply(np.multiply(2, ln.p1-sp.c), lnc)
-        C = np.multiply(ln.p1-sp.c, ln.p1-sp.c)-np.power(sp.r, 2)
+        A = lnc.times(lnc)
+        B = ln.p1.minus(sp.c).times(lnc.times(2))
+        C = ln.p1.minus(sp.c).times(ln.p1.minus(sp.c)) - np.power(sp.r, 2)
 
         delta = np.power(B, 2) - np.multiply(4, np.multiply(A, C))
 
@@ -131,14 +133,14 @@ class Spherical:
         else:
             t1 = np.divide(-B + np.sqrt(delta), 2 * A)
 
-        p = ln.p1 + np.multiply(t1, lnc)
+        p = ln.p1.plus(lnc.times(t1))
 
         if delta < 0:
             p.X = np.nan
             p.Y = np.nan
             p.Z = np.nan
 
-        return p()
+        return p
 
     def perpline(self, p):
         # PERPLINE Line perpendicular to sphere passing by point
@@ -150,18 +152,18 @@ class Spherical:
 
         sp = copy.deepcopy(self)
 
-        p1 = Point(np.multiply(sp.c.X, np.ones(p.shape())), np.multiply(sp.c.Y, np.ones(p.shape())), np.multiply(sp.c.Z, np.ones(p.shape())))
+        p1 = Point(np.multiply(sp.c.X, np.ones(np.shape(p))), np.multiply(sp.c.Y, np.ones(np.shape(p))), np.multiply(sp.c.Z, np.ones(np.shape(p))))
 
-        p2 = Point(np.multiply(p.X, np.ones(p.shape())), np.multiply(p.Y, np.ones(p.shape())), np.multiply(p.Z, np.ones(p.shape())))
+        p2 = Point(np.multiply(p.X, np.ones(np.shape(p))), np.multiply(p.Y, np.ones(np.shape(p))), np.multiply(p.Z, np.ones(np.shape(p))))
 
         ln = SLine(p1, p2)
 
-        return ln()
+        return ln
 
     def tangentplane(self, p):
 
         sp = copy.deepcopy(self)
-        pl = Plane.perpto(sp.perpline(p), p)
+        pl = Plane(0, 0, 0).perpto(sp.perpline(p), p)
 
-        return pl()
+        return pl
 
