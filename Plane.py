@@ -144,7 +144,7 @@ class Plane:
 
         return pl
 
-    def perpto(self, ln, p):
+    def perpto(self, p):
         # PERPTO Plane perpendicular to line and passing by point (Static)
         #
         # PL = PERPTO(LN,P) calculates plane set PL perpendicular
@@ -152,6 +152,8 @@ class Plane:
         #   LN and P must have the same size, or just must be a singleton.
         #
         # See also Plane, Sline, Point.
+
+        ln = copy.deepcopy(self)
 
         ln.p1.X = np.multiply(ln.p1.X, np.ones(np.shape(p)))
         ln.p1.Y = np.multiply(ln.p1.Y, np.ones(np.shape(p)))
