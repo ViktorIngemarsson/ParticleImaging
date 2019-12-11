@@ -158,6 +158,9 @@ class Ray:
                 r_r3 = r3.xrotation(2 * theta_i).uminus()
             else:
                 r_r3 = r3.xrotation(-2 * theta_i).uminus()
+            # dtheta = theta_i *2
+            # if dtheta < 0: dtheta = -dtheta
+            # r_r3 = r3.xrotation(dtheta).uminus()
 
             r_r3.pol.Vx = np.abs(np.dot(rs, r_r3.pol.Vx))
             r_r3.pol.Vy = np.abs(np.dot(rp, r_r3.pol.Vy))

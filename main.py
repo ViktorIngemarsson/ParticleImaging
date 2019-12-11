@@ -17,10 +17,11 @@ c = Point(0, 0, 0)  # Particle center [m]
 # Particle
 bead = ParticleSpherical(c, R, nm, nP)
 
-theta = 0.5 #% [0: 1:89.9]./ 180 * np.pi
+#theta = 0.5 #% [0: 1:89.9]./ 180 * np.pi
 
 # Ray
 #v = Vector(-2 * R, R * np.sin(theta), 0, 1, 0.2, 0.2) # Direction
+#v = Vector(np.asarray([R/2,R/3]),np.asarray([R/2,R/3]),np.asarray([0,0]),np.asarray([0,0]),np.asarray([0,0]),np.asarray([1,1]))
 v = Vector(R/2,R/2,0,0,0,1)
 P = 1 # Power[W]
 pol = Vector(0, 0, 0, 0, 1, 1)

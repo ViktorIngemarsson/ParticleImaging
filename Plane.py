@@ -155,22 +155,23 @@ class Plane:
 
         ln = copy.deepcopy(self)
 
-        ln.p1.X = np.multiply(ln.p1.X, np.ones(np.shape(p)))
-        ln.p1.Y = np.multiply(ln.p1.Y, np.ones(np.shape(p)))
-        ln.p1.Z = np.multiply(ln.p1.Z, np.ones(np.shape(p)))
-        ln.p2.X = np.multiply(ln.p2.X, np.ones(np.shape(p)))
-        ln.p2.Y = np.multiply(ln.p2.Y, np.ones(np.shape(p)))
-        ln.p2.Z = np.multiply(ln.p2.Z, np.ones(np.shape(p)))
+        ln.p1.X = np.multiply(ln.p1.X, np.ones(p.size()))
+        ln.p1.Y = np.multiply(ln.p1.Y, np.ones(p.size()))
+        ln.p1.Z = np.multiply(ln.p1.Z, np.ones(p.size()))
+        ln.p2.X = np.multiply(ln.p2.X, np.ones(p.size()))
+        ln.p2.Y = np.multiply(ln.p2.Y, np.ones(p.size()))
+        ln.p2.Z = np.multiply(ln.p2.Z, np.ones(p.size()))
 
-        p.X = np.multiply(p.X, np.ones(np.shape(ln)))
-        p.Y = np.multiply(p.Y, np.ones(np.shape(ln)))
-        p.Z = np.multiply(p.Z, np.ones(np.shape(ln)))
+        p.X = np.multiply(p.X, np.ones(ln.size()))
+        p.Y = np.multiply(p.Y, np.ones(ln.size()))
+        p.Z = np.multiply(p.Z, np.ones(ln.size()))
 
         c0 = ln.translate(ln.p1.uminus).p2
 
-        Xt = np.zeros(np.shape(c0))
-        Yt = np.zeros(np.shape(c0))
-        Zt = np.ones(np.shape(c0))
+        Xt = np.zeros(c0.size())
+        Yt = np.zeros(c0.size())
+        Zt = np.ones(c0.size())
+        #Xt[c0.Z.times(c0.Z) > np.multiply(100, (c0.X.times(c0.X).plus(c0.Y.times(c0.Y))))] = 1
         Xt[np.power(c0.Z, 2) > np.multiply(100, (np.add(np.power(c0.X, 2), np.power(c0.Y, 2))))] = 1
         Zt[np.power(c0.Z, 2) > np.multiply(100, np.add(np.power(c0.X, 2), np.power(c0.Y, 2)))] = 0
         c1 = c0.mtimes(Point(Xt, Yt, Zt))

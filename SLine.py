@@ -84,7 +84,7 @@ class SLine:
         ln = copy.deepcopy(self)
         return ln.p1.size
 
-    def size(self, varargin):
+    def size(self, varargin = None):
         # SIZE Size of line set
         #
         # S = SIZE(LN) returns a two-element row vector with the number
