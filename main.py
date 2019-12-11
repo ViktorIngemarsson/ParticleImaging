@@ -34,14 +34,14 @@ s = bead.scattering(r, 1e-12, 6)
 #f = bead.force(r, 1e-12, 6);
 
 # #Plotting
-# vectorsTransmitted = list()
-# vectorsReflected = list()
-# for vector in s:
-#     vectorsTransmitted.append(vector["r_t"].v)
-#     vectorsReflected.append(vector["r_r"].v)
-#
-# s_t = np.asarray(vectorsTransmitted)
-# s_r = np.asarray(vectorsReflected)
-# s_t[0].plot_multiple_vectors(s_t)
-# s_r[0].plot_multiple_vectors(s_r)
+vectorsTransmitted = list()
+vectorsReflected = list()
+for vector in s:
+    vectorsTransmitted.append(vector["r_t"].v)
+    vectorsReflected.append(vector["r_r"].v)
+
+s_t = np.asarray(vectorsTransmitted)
+s_r = np.asarray(vectorsReflected)
+s_t[0].plot_multiple_vectors(s_t)
+s_r[0].plot_multiple_vectors(s_r)
 

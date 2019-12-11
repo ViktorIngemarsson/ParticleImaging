@@ -71,7 +71,12 @@ class ParticleSpherical:
         a = r.snellslaw(self.sp, self.nm, self.np, 1)
 
         c = [a]
-        for n in range(0, N-1, 1):
+
+        d = c[0]['r_t'].snellslaw(self.sp, self.np, self.nm, 2)
+
+        c.append(d)
+
+        for n in range(1, N-1, 1):
             l = c[n]['r_r'].snellslaw(self.sp, self.np, self.nm, 2)
             c.append(l)
             if c[n + 1]['r_r'].P < r.P * err or math.isnan(c[n + 1]['r_r'].P):

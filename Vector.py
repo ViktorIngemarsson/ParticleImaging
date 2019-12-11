@@ -42,9 +42,9 @@ class Vector(Point):  # Inherits from Superclass Point
         x = np.cos(u) * np.sin(v)
         y = np.sin(u) * np.sin(v)
         z = np.cos(v)
-        radius = 1
+        radius = 1e-6
         ax.plot_surface(np.multiply(x, radius), np.multiply(y, radius), np.multiply(z, radius), rstride=1, cstride=1,
-                        color="g", alpha=0.5, linewidth=0)
+                       color="g", alpha=0.5, linewidth=0)
         plt.show()
 
         return
