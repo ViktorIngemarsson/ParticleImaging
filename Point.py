@@ -150,7 +150,8 @@ class Point:
         return p_d
 
     def norm(self):
-        return np.linalg.norm(np.array([self.X, self.Y, self.Z]))
+        p = copy.deepcopy(self)
+        return np.sqrt(p.times(p))
 
     def normalize(self):
         nominator = copy.deepcopy(self)

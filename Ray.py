@@ -22,6 +22,75 @@ class Ray:
         self.pol.Y = v.Y
         self.pol.Z = v.Z
 
+    def disp(self):
+        print(self.v.X)
+        print(self.v.Y)
+        print(self.v.Z)
+        print(self.v.Vx)
+        print(self.v.Vy)
+        print(self.v.Vz)
+        print(self.P)
+        print(self.pol.Vx)
+        print(self.pol.Vy)
+        print(self.pol.Vz)
+
+    def translate(self, dp):
+        r = copy.deepcopy(self)
+        r_t = r
+        r_t.v = r.v.translate(dp)
+        r_t.pol = r.pol.translate(dp)
+        return r_t
+
+    def xrotation(self, phi):
+        r = copy.deepcopy(self)
+        r_r = r
+        r_r.v = r.v.xrotation(phi)
+        r_r.pol = r.pol.xrotation(phi)
+        return r_r
+
+    def yrotation(self, phi):
+        r = copy.deepcopy(self)
+        r_r = r
+        r_r.v = r.v.yrotation(phi)
+        r_r.pol = r.pol.yrotation(phi)
+        return r_r
+
+    def zrotation(self, phi):
+        r = copy.deepcopy(self)
+        r_r = r
+        r_r.v = r.v.zrotation(phi)
+        r_r.pol = r.pol.zrotation(phi)
+        return r_r
+
+    def numel(self):
+        r = copy.deepcopy(self)
+        return np.size(r.v.X)
+
+    def size(self, varargin=None):
+        if varargin != None:
+            return np.shape(np.asarray(self.v.X), varargin[0])
+        else:
+            return np.shape(np.asarray(self.v.X))
+
+    def uplus(self):
+        return copy.deepcopy(self)
+
+    def uminus(self):
+        r_m = copy.deepcopy(self)
+        r_m.v = r_m.v.uminus()
+        return r_m
+
+    def angle(self,r2):
+        r1 = copy.deepcopy(self)
+        return r1.v.angle(r2.v)
+
+    def versor(self):
+        return copy.deepcopy(self).v.versor()
+
+    def toline(self):
+        return copy.deepcopy(self).v.toline()
+
+
     # TODO: I matlab så används nargin för att avgöra hur många input-argument functionen tar emot, hur gör vi det i python,
     #   och kan de olika funktionerna ta emot olika många inputs?
 
@@ -135,7 +204,7 @@ class Ray:
             # tir = [j for (i, j) in zip(np.imag(theta_t), indices) if i != 0]
             # tir = [x - 1 for x in tir]
             if np.imag(theta_t) != 0:
-            # tir = np.imag(theta_t) != 0
+                # tir = np.imag(theta_t) != 0
                 r_r3.P = r.P
                 r_r3.pol.Vx = np.abs(r_r3.pol.Vx)
                 r_r3.pol.Vy = np.abs(r_r3.pol.Vy)
@@ -271,136 +340,3 @@ class Ray:
         res = res.zrotation(phi)
 
         return res
-
-    def translate(self, dp):
-
-        # TRANSLATE 3D translation of ray set
-        #
-        # Rt = TRANSLATE(R,dP) translates set of rays R by dP.
-        #   If dP is a Point, the translation corresponds to the
-        #   coordinates X, Y and Z.
-        #   If dP is a Vector, the translation corresponds to the
-        #   components Vx, Vy and Vz.
-        #
-        # See also Ray, Point, Vector.
-        r = copy.deepcopy(self)
-
-        r_t = copy.deepcopy(r)
-        r_t.v = r.v.translate(dp)
-        r_t.pol = r.pol.translate(dp)
-        return r_t
-
-    def xrotation(self, phi):
-        # XROTATION Rotation around x-axis of ray set
-        #
-        # Rr = XROTATION(R,phi) rotates set of rays R around x-axis
-        #   by an angle phi [rad].
-        #
-        # See also Ray.
-        r = copy.deepcopy(self)
-        r_r = r
-        r_r.v = r.v.xrotation(phi)
-        r_r.pol = r.pol.xrotation(phi)
-        return r_r
-
-    def yrotation(self, phi):
-        # YROTATION Rotation around y-axis of ray set
-        #
-        # Rr = YROTATION(R,phi) rotates set of rays R around y-axis
-        #   by an angle phi [rad].
-        #
-        # See also Ray.
-        r = copy.deepcopy(self)
-        r_r = r
-        r_r.v = r.v.yrotation(phi)
-        r_r.pol = r.pol.yrotation(phi)
-        return r_r
-
-    def zrotation(self, phi):
-        # ZROTATION Rotation around z-axis of ray set
-        #
-        # Rr = ZROTATION(R,phi) rotates set of rays R around z-axis
-        #   by an angle phi [rad].
-        #
-        # See also Ray.
-
-        r = copy.deepcopy(self)
-
-        r_r = r
-        r_r.v = r.v.zrotation(phi)
-        r_r.pol = r.pol.zrotation(phi)
-        return r_r
-
-    def numel(self):
-        # NUMEL Number of rays
-        #
-        # N = NUMEL(R) number of rays in set R.
-        #
-        # See also Ray.
-        r = copy.deepcopy(self)
-
-        return r.v.size
-
-    def size(self, varargin):
-        # SIZE Size of the ray set
-        #
-        # S = SIZE(R) returns a two-element row vector with the number
-        #   of rows and columns in the ray set R.
-        #
-        # S = SIZE(R,DIM) returns the length of the dimension specified
-        #   by the scalar DIM in the ray set R.
-        #
-        # See also Ray.
-        r = copy.deepcopy(self)
-        if varargin.size > 0:
-            s = r.v.size(varargin[1])
-        else:
-            s = r.v.size()
-        return s
-
-    def uminus(self):
-        # UMINUS Unitary minus (components)
-        #
-        # Rm = UMINUS(R) Unitary minus (Rm = -R).
-        #   -R inverts the components of R.
-        #   The points of application and polarizations are left unchanged.
-        #
-        # See also Ray.
-        r = copy.deepcopy(self)
-        r_m = r
-        r_m.v = r_m.v.uminus()
-        return r_m
-
-    def angle(self, r2):
-        # ANGLE Angle (coordinates)
-        #
-        # PHI = ANGLE(R1,R2) calculates the angle between the set of
-        #   rays R1 and R2.
-        #
-        # See also Ray.
-        r1 = copy.deepcopy(self)
-        return r1.v.angle(r2.v)
-
-    def versor(self):
-        # VERSOR Unitary vector
-        #
-        # U = VERSOR(R) returns the unit vector set corresponding to
-        #   the ray set R.
-        #   The coordinates of U are the points of application of R.
-        #
-        # See also Ray, Vector.
-        r = copy.deepcopy(self)
-        return r.v.versor()
-
-    def toline(self):
-        # TOLINE Ray to line
-        #
-        # LN = TOLINE(R) converts the set of rays R into the set of
-        #   lines LN. The coordinates X, Y and Z of the initial points
-        #   of the lines are the points of application of R and
-        #   the coordinates of the final points are the sum of the coordiantes
-        #   of the initial points and of the components of R.
-        #
-        # See also Ray, SLine.
-        r = copy.deepcopy(self)
-        return r.v.toline()
