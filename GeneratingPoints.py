@@ -15,7 +15,7 @@ def GeneratingCoordinates(n):
     r = r/maxRadius
     x = r*np.cos(theta)
     y = r * np.sin(theta)
-    return x,y
+    return x, y
 
 def radius(k, n, b):
     if k > n - b:
