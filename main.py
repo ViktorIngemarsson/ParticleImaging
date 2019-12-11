@@ -42,6 +42,6 @@ for vector in s:
 
 s_t = np.asarray(vectorsTransmitted)
 s_r = np.asarray(vectorsReflected)
-s_t[0].plot_multiple_vectors(s_t)
-s_r[0].plot_multiple_vectors(s_r)
+s_t[0].plot_multiple_vectors(s_t,R)
+s_r[0].plot_multiple_vectors(s_r,R)
 
