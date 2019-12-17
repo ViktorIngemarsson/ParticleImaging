@@ -2,20 +2,21 @@ import math
 import random
 import numpy as np
 
-def GeneratingCoordinates(n):
+def GeneratingCoordinates(n, sphere_r):
     alpha = 0
     b = np.round(alpha * np.sqrt(n))
     phi = (np.sqrt(5) + 1) / 2
     r = np.empty(n)
     theta = np.empty(n)
-    for k in range(1,n):
+    for k in range(1, n):
         r[k] = radius(k, n, b)
-        theta[k] = 2 * np.pi * k / phi**2
+        theta[k] = 2 * np.pi * k / phi ** 2
     maxRadius = max(r)
-    r = r/maxRadius
-    x = r*np.cos(theta)
+    r = r / maxRadius
+    x = r * np.cos(theta)
     y = r * np.sin(theta)
-    return x, y
+    return x * sphere_r, y * sphere_r
+
 
 def radius(k, n, b):
     if k > n - b:
