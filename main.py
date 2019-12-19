@@ -38,7 +38,7 @@ scattering_number_of_iterations = 6
 # Camera
 lens_size_x = 0.001  # 1mm
 lens_size_y = 0.001
-resolution = 400  # Assuming quadratic image
+resolution = 1000  # Assuming quadratic image
 
 ########################################################################################################################
 
@@ -55,8 +55,9 @@ pixels = np.zeros(resolution * resolution)
 pixels_background = np.zeros(resolution * resolution)
 
 # Coordinates for the rays hitting the sphere
-x, y = GeneratingCoordinates(number_of_rays, R)
-
+rho = 360*10e9
+x, y = GeneratingCoordinates(rho, R, particle_center_x, particle_center_y)
+number_of_rays = np.size(x)
 # Define lens plane
 planeNormal = np.array([0, 0, 1])
 planePoint = np.array([0, 0, 1])  # Any point on the plane
@@ -107,7 +108,7 @@ new_pixels = np.add(pixels_background, pixels)
 # Normalize the image
 new_pixels = new_pixels / max(new_pixels)
 
-image = np.reshape(new_pixels, (resolution, resolution))
+image = np.reshape(pixels, (resolution, resolution))
 
 fig = plt.figure(figsize=(1, 3))
 plt.imshow(image, cmap='gray_r', vmin=0, vmax=1)
