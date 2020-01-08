@@ -106,8 +106,10 @@ class Ray:
 
             # Incidence angle
             theta_i = r.toline().angle(perp)
-            if theta_i > np.pi / 2:
-                theta_i = np.pi - theta_i
+            if (theta_i > np.pi / 2).any():
+                theta_i[theta_i > np.pi / 2] = -theta_i[theta_i > np.pi / 2] + np.pi
+            # if theta_i > np.pi / 2:
+            #     theta_i = np.pi - theta_i
 
             # Transmission angle
             theta_t = np.arcsin(n1 / n2 * np.sin(theta_i))
@@ -154,50 +156,59 @@ class Ray:
             tp = output_dictP["tp"]
 
             # Reflected ray
-            if r3.v.Z > 0:
-                r_r3 = r3.xrotation(2 * theta_i).uminus()
-            else:
-                r_r3 = r3.xrotation(-2 * theta_i).uminus()
-            # dtheta = theta_i *2
-            # if dtheta < 0: dtheta = -dtheta
-            # r_r3 = r3.xrotation(dtheta).uminus()
+            # if r3.v.Z > 0:
+            #     r_r3 = r3.xrotation(2 * theta_i).uminus()
+            # else:
+            #     r_r3 = r3.xrotation(-2 * theta_i).uminus()
+            dtheta = theta_i *2
+            dtheta[r3.v.Z < 0] = -dtheta[r3.v.Z < 0]
+            r_r3 = r3.xrotation(dtheta).uminus()
 
-            r_r3.pol.Vx = np.abs(np.dot(rs, r_r3.pol.Vx))
-            r_r3.pol.Vy = np.abs(np.dot(rp, r_r3.pol.Vy))
-            r_r3.pol.Vz = np.abs(np.dot(rp, r_r3.pol.Vz))
+            r_r3.pol.Vx = np.abs(rs * r_r3.pol.Vx)
+            r_r3.pol.Vy = np.abs(rp * r_r3.pol.Vy)
+            r_r3.pol.Vz = np.abs(rp * r_r3.pol.Vz)
 
             cs = np.divide((np.square(r3.pol.Vx)), np.square(r3.pol.norm()))
             cp = np.divide((np.square(r3.pol.Vy)) + np.square(r3.pol.Vz), np.square(r3.pol.norm()))
-            R = np.dot(cs, Rs) + np.dot(cp, Rp)
+            R = cs * Rs + cp * Rp
 
             r_r3.v.X = np.zeros(np.shape(r))
             r_r3.v.Y = np.zeros(np.shape(r))
             r_r3.v.Z = np.zeros(np.shape(r))
-            r_r3.P = np.dot(r.P, R)
+            r_r3.P = r.P * R
             r_r3.pol.X = np.zeros(np.shape(r))
             r_r3.pol.Y = np.zeros(np.shape(r))
             r_r3.pol.Z = np.zeros(np.shape(r))
 
             # transmitted ray
-            if r3.v.Z > 0:
-                r_t3 = r3.xrotation(-np.pi + theta_i - theta_t).uminus()
-                r_t3.pol.Vy = -r_t3.pol.Vy
-                r_t3.pol.Vz = -r_t3.pol.Vz
-            else:
-                r_t3 = r3.xrotation(np.pi - theta_i + theta_t).uminus()
-                r_t3.pol.Vy = -r_t3.pol.Vy
-                r_t3.pol.Vz = -r_t3.pol.Vz
+            # if r3.v.Z > 0:
+            #     r_t3 = r3.xrotation(-np.pi + theta_i - theta_t).uminus()
+            #     r_t3.pol.Vy = -r_t3.pol.Vy
+            #     r_t3.pol.Vz = -r_t3.pol.Vz
+            # else:
+            #     r_t3 = r3.xrotation(np.pi - theta_i + theta_t).uminus()
+            #     r_t3.pol.Vy = -r_t3.pol.Vy
+            #     r_t3.pol.Vz = -r_t3.pol.Vz
+            dtheta = -np.pi + theta_i - theta_t
+            dtheta[r3.v.Z < 0] = -dtheta[r3.v.Z < 0]
+            r_t3 = r3.xrotation(np.real(dtheta)).uminus()
+            r_t3.pol.Vy = -r_t3.pol.Vy
+            r_t3.pol.Vz = -r_t3.pol.Vz
 
-            r_t3.pol.Vx = np.dot(ts, r_t3.pol.Vx)
-            r_t3.pol.Vy = np.dot(tp, r_t3.pol.Vy)
-            r_t3.pol.Vz = np.dot(tp, r_t3.pol.Vz)
+            r_t3.pol.Vx = ts * r_t3.pol.Vx
+            r_t3.pol.Vy = tp * r_t3.pol.Vy
+            r_t3.pol.Vz = tp * r_t3.pol.Vz
+
+            r_t3.pol.Vx = np.multiply(ts, r_t3.pol.Vx)
+            r_t3.pol.Vy = np.multiply(tp, r_t3.pol.Vy)
+            r_t3.pol.Vz = np.multiply(tp, r_t3.pol.Vz)
 
             T = 1 - R
 
             r_t3.v.X = np.zeros(np.shape(r))
             r_t3.v.Y = np.zeros(np.shape(r))
             r_t3.v.Z = np.zeros(np.shape(r))
-            r_t3.P = np.dot(r.P, T)
+            r_t3.P = np.multiply(r.P, T)
             r_t3.pol.X = np.zeros(np.shape(r))
             r_t3.pol.Y = np.zeros(np.shape(r))
             r_t3.pol.Z = np.zeros(np.shape(r))
@@ -206,20 +217,34 @@ class Ray:
             # indices = [1, 2, 3]
             # tir = [j for (i, j) in zip(np.imag(theta_t), indices) if i != 0]
             # tir = [x - 1 for x in tir]
-            if np.imag(theta_t) != 0:
-                # tir = np.imag(theta_t) != 0
-                r_r3.P = r.P
-                r_r3.pol.Vx = np.abs(r_r3.pol.Vx)
-                r_r3.pol.Vy = np.abs(r_r3.pol.Vy)
-                r_r3.pol.Vz = np.abs(r_r3.pol.Vz)
+            # if np.imag(theta_t) != 0:
+            #     # tir = np.imag(theta_t) != 0
+            #     r_r3.P = r.P
+            #     r_r3.pol.Vx = np.abs(r_r3.pol.Vx)
+            #     r_r3.pol.Vy = np.abs(r_r3.pol.Vy)
+            #     r_r3.pol.Vz = np.abs(r_r3.pol.Vz)
+            #
+            #     r_t3.P = 0
+            #     r_t3.v.Vx = np.real(r_t3.v.Vx)
+            #     r_t3.v.Vy = np.real(r_t3.v.Vy)
+            #     r_t3.v.Vz = np.real(r_t3.v.Vz)
+            #     r_t3.pol.Vx = np.abs(r_t3.pol.Vx)
+            #     r_t3.pol.Vy = np.abs(r_t3.pol.Vy)
+            #     r_t3.pol.Vz = np.abs(r_t3.pol.Vz)
+            tir = np.imag(theta_t) != 0
 
-                r_t3.P = 0
-                r_t3.v.Vx = np.real(r_t3.v.Vx)
-                r_t3.v.Vy = np.real(r_t3.v.Vy)
-                r_t3.v.Vz = np.real(r_t3.v.Vz)
-                r_t3.pol.Vx = np.abs(r_t3.pol.Vx)
-                r_t3.pol.Vy = np.abs(r_t3.pol.Vy)
-                r_t3.pol.Vz = np.abs(r_t3.pol.Vz)
+            r_r3.P[tir] = r.P[tir]
+            r_r3.pol.Vx[tir] = np.abs(r_r3.pol.Vx[tir])
+            r_r3.pol.Vy[tir] = np.abs(r_r3.pol.Vy[tir])
+            r_r3.pol.Vz[tir] = np.abs(r_r3.pol.Vz[tir])
+
+            r_t3.P[tir] = 0
+            r_t3.v.Vx[tir] = np.real(r_t3.v.Vx[tir])
+            r_t3.v.Vy[tir] = np.real(r_t3.v.Vy[tir])
+            r_t3.v.Vz[tir] = np.real(r_t3.v.Vz[tir])
+            r_t3.pol.Vx[tir] = np.abs(r_t3.pol.Vx[tir])
+            r_t3.pol.Vy[tir] = np.abs(r_t3.pol.Vy[tir])
+            r_t3.pol.Vz[tir] = np.abs(r_t3.pol.Vz[tir])
 
             # back rotation around z(-3)
             r_r4 = r_r3.zrotation(-phi3)
@@ -248,16 +273,9 @@ class Ray:
             pl = Plane.perpto(ln, p)
 
             # Snell's law
-            output = r.snellslaw(pl, n1, n2, 1)
-            r_r = output['r_r']
-            r_t = output['r_t']
-            perp = output['perp']
+            return r.snellslaw(pl, n1, n2, 1)
 
-        return {
-            "r_r": r_r,
-            "r_t": r_t,
-            "perp": perp
-        }
+        return r_r, r_t, perp
 
     @staticmethod
     def rtcoeffs(theta_i, n1, n2):

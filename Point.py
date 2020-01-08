@@ -43,20 +43,20 @@ class Point:
 
     def xrotation(self, phi):
         p_r = copy.deepcopy(self)
-        p_r.Y = np.dot(self.Y, np.cos(phi)) - np.dot(self.Z, np.sin(phi))
-        p_r.Z = np.dot(self.Y, np.sin(phi)) + np.dot(self.Z, np.cos(phi))
+        p_r.Y = self.Y * np.cos(phi) - self.Z * np.sin(phi)
+        p_r.Z = self.Y * np.sin(phi) + self.Z * np.cos(phi)
         return p_r
 
     def yrotation(self, phi):
         p_r = copy.deepcopy(self)
-        p_r.X = np.dot(self.X, np.cos(phi)) + np.dot(self.Z, np.sin(phi))
-        p_r.Z = np.dot(-self.X, np.sin(phi)) + np.dot(self.Z, np.cos(phi))
+        p_r.X = self.X * np.cos(phi) + self.Z * np.sin(phi)
+        p_r.Z = -self.X * np.sin(phi) + self.Z * np.cos(phi)
         return p_r
 
     def zrotation(self, phi):
         p_r = copy.deepcopy(self)
-        p_r.X = np.dot(self.X, np.cos(phi)) - np.dot(self.Y, np.sin(phi))
-        p_r.Y = np.dot(self.X, np.sin(phi)) + np.dot(self.Y, np.cos(phi))
+        p_r.X = self.X * np.cos(phi) - self.Y * np.sin(phi)
+        p_r.Y = self.X * np.sin(phi) + self.Y * np.cos(phi)
         return p_r
 
     def numel(self):
@@ -98,23 +98,23 @@ class Point:
             p1 = copy.deepcopy(a)
             p2 = b
             m = copy.deepcopy(p1)
-            m.X = np.subtract(np.dot(p1.Y, p2.Z), np.dot(p1.Z, p2.Y))
-            m.Y = np.add(np.dot(-p1.X, p2.Z), np.dot(p1.Z, p2.X))
-            m.Z = np.subtract(np.dot(p1.X, p2.Y), np.dot(p1.Y, p2.X))
+            m.X = np.subtract(np.multiply(p1.Y, p2.Z), np.multiply(p1.Z, p2.Y))
+            m.Y = np.add(np.multiply(-p1.X, p2.Z), np.multiply(p1.Z, p2.X))
+            m.Z = np.subtract(np.multiply(p1.X, p2.Y), np.multiply(p1.Y, p2.X))
         elif isinstance(a, Point):
             p1 = copy.deepcopy(a)
             m = copy.deepcopy(p1)
-            m.X = np.dot(p1.X, b)
-            m.Y = np.dot(p1.Y, b)
-            m.Z = np.dot(p1.Z, b)
+            m.X = np.multiply(p1.X, b)
+            m.Y = np.multiply(p1.Y, b)
+            m.Z = np.multiply(p1.Z, b)
         elif isinstance(b, Point):
             p2 = copy.deepcopy(b)
             m = copy.deepcopy(p2)
-            m.X = np.dot(a, p2.X)
-            m.Y = np.dot(a, p2.Y)
-            m.Z = np.dot(a, p2.Z)
+            m.X = np.multiply(a, p2.X)
+            m.Y = np.multiply(a, p2.Y)
+            m.Z = np.multiply(a, p2.Z)
         else:
-            m = np.dot(a, b)
+            m = np.multiply(a, b)
 
         return m
 
@@ -123,23 +123,23 @@ class Point:
         if isinstance(a, Point) and isinstance(b, Point):
             p1 = copy.deepcopy(a)
             p2 = b
-            m = np.dot(p1.X, p2.X) + np.dot(p1.Y, p2.Y) + np.dot(p1.Z, p2.Z)
+            m = (p1.X * p2.X) + p1.Y * p2.Y + p1.Z * p2.Z #Changed but might have worked
         elif isinstance(a, Point):
             p1 = a
             m = p1
-            m.X = np.dot(p1.X, b)
-            m.Y = np.dot(p1.Y, b)
-            m.Z = np.dot(p1.Z, b)
+            m.X = np.multiply(p1.X, b)
+            m.Y = np.multiply(p1.Y, b)
+            m.Z = np.multiply(p1.Z, b)
 
         elif isinstance(b, Point):
             p2 = b
             m = p2
-            m.X = np.dot(a, p2.X)
-            m.Y = np.dot(a, p2.Y)
-            m.Z = np.dot(a, p2.Z)
+            m.X = np.multiply(a, p2.X)
+            m.Y = np.multiply(a, p2.Y)
+            m.Z = np.multiply(a, p2.Z)
 
         else:
-            m = np.dot(a, b)
+            m = np.multiply(a, b)
         return m
 
     def rdivide(self, b):
