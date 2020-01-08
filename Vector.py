@@ -167,29 +167,29 @@ class Vector(Point):  # Inherits from Superclass Point
             v1 = copy.deepcopy(a)
             v2 = b
             m = copy.deepcopy(v1)
-            m.Vx = np.dot(v1.Vy, v2.Vz) - np.dot(v1.Vz, v2.Vy)
-            m.Vy = -np.dot(v1.Vx, v2.Vz) + np.dot(v1.Vz, v2.Vx)
-            m.Vz = np.dot(v1.Vx, v2.Vy) - np.dot(v1.Vy, v2.Vx)
+            m.Vx = np.multiply(v1.Vy, v2.Vz) - np.multiply(v1.Vz, v2.Vy)
+            m.Vy = -np.multiply(v1.Vx, v2.Vz) + np.multiply(v1.Vz, v2.Vx)
+            m.Vz = np.multiply(v1.Vx, v2.Vy) - np.multiply(v1.Vy, v2.Vx)
         elif isinstance(a, Vector):
             v1 = copy.deepcopy(a)
             m = copy.deepcopy(v1)
             m.X = m.X * np.ones([b.size()], dtype=int)
             m.Y = m.Y * np.ones([b.size()], dtype=int)
             m.Z = m.Z * np.ones([b.size()], dtype=int)
-            m.Vx = np.dot(v1.Vx, b)
-            m.Vy = np.dot(v1.Vy, b)
-            m.Vz = np.dot(v1.Vz, b)
+            m.Vx = np.multiply(v1.Vx, b)
+            m.Vy = np.multiply(v1.Vy, b)
+            m.Vz = np.multiply(v1.Vz, b)
         elif isinstance(b, Vector):
             v2 = copy.deepcopy(b)
             m = copy.deepcopy(v2)
             m.X = m.X * np.ones([a.size()], dtype=int)
             m.Y = m.Y * np.ones([a.size()], dtype=int)
             m.Z = m.Z * np.ones([a.size()], dtype=int)
-            m.Vx = np.dot(a, v2.Vx)
-            m.Vy = np.dot(a, v2.Vy)
-            m.Vz = np.dot(a, v2.Vz)
+            m.Vx = np.multiply(a, v2.Vx)
+            m.Vy = np.multiply(a, v2.Vy)
+            m.Vz = np.multiply(a, v2.Vz)
         else:
-            m = np.dot(a, b)
+            m = np.multiply(a, b)
 
         return m
 
@@ -216,27 +216,27 @@ class Vector(Point):  # Inherits from Superclass Point
         if isinstance(a, Vector) & isinstance(b, Vector):
             v1 = copy.deepcopy(a)
             v2 = copy.deepcopy(b)
-            m = np.dot(v1.Vx, v2.Vx) + np.dot(v1.Vy, v2.Vy) + np.dot(v1.Vz, v2.Vz)
+            m = np.multiply(v1.Vx, v2.Vx) + np.multiply(v1.Vy, v2.Vy) + np.multiply(v1.Vz, v2.Vz)
         elif isinstance(a, Vector):
             v1 = copy.deepcopy(a)
             m = copy.deepcopy(v1)
             m.X = m.X * np.ones([b.size()], dtype=int)
             m.Y = m.Y * np.ones([b.size()], dtype=int)
             m.Z = m.Z * np.ones([b.size()], dtype=int)
-            m.Vx = np.dot(v1.Vx, b)
-            m.Vy = np.dot(v1.Vy, b)
-            m.Vz = np.dot(v1.Vz, b)
+            m.Vx = np.multiply(v1.Vx, b)
+            m.Vy = np.multiply(v1.Vy, b)
+            m.Vz = np.multiply(v1.Vz, b)
         elif isinstance(b, Vector):
             v2 = copy.deepcopy(b)
             m = copy.deepcopy(v2)
-            m.X = m.X * np.ones([a.size()], dtype=int)  # om fel kanske detta ska göras med np.dot
+            m.X = m.X * np.ones([a.size()], dtype=int)
             m.Y = m.Y * np.ones([a.size()], dtype=int)
             m.Z = m.Z * np.ones([a.size()], dtype=int)
-            m.Vx = np.dot(a, v2.Vx)
-            m.Vy = np.dot(a, v2.Vy)
-            m.Vz = np.dot(a, v2.Vz)
+            m.Vx = np.multiply(a, v2.Vx)
+            m.Vy = np.multiply(a, v2.Vy)
+            m.Vz = np.multiply(a, v2.Vz)
         else:
-            m = np.dot(a, b)
+            m = np.multiply(a, b)
 
         return m
 
@@ -265,10 +265,9 @@ class Vector(Point):  # Inherits from Superclass Point
         #
         # See also Vector.
         v = copy.deepcopy(self)
-        v_temp = np.array([v.Vx, v.Vy, v.Vz])
-        norm = np.linalg.norm(v_temp)
-        if norm == 0:
-            return v
+        v_temp = np.transpose(np.array([v.Vx, v.Vy, v.Vz]))
+        norm = np.linalg.norm(v_temp, axis=1)
+
         return v.rdivide(norm)
 
     def topoint(self):

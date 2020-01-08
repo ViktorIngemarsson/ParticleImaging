@@ -1,6 +1,6 @@
 from Spherical import Spherical
 import copy
-#import numpy as np
+import numpy as np
 import math
 
 class ParticleSpherical:
@@ -66,21 +66,54 @@ class ParticleSpherical:
         # See also ParticleSpherical, Ray.
         if (N == None):
             N = 10
-        elif (err == None):
+        if (err == None):
             err = 1e-12
-        a = r.snellslaw(self.sp, self.nm, self.np, 1)
+        # a = r.snellslaw(self.sp, self.nm, self.np, 1)
+        #
+        # c = [a]
+        #
+        # d = c[0]['r_t'].snellslaw(self.sp, self.np, self.nm, 2)
+        #
+        # c.append(d)
+        #
+        # for n in range(1, N, 1):
+        #     l = c[n]['r_r'].snellslaw(self.sp, self.np, self.nm, 2)
+        #     c.append(l)
+        #     if c[n + 1]['r_r'].P < r.P * err or math.isnan(c[n + 1]['r_r'].P):
+        #         break
 
-        c = [a]
-
-        d = c[0]['r_t'].snellslaw(self.sp, self.np, self.nm, 2)
-
-        c.append(d)
-
+        r_r, r_t, perp = r.snellslaw(self.sp, self.nm, self.np, 1)
+        rVec = []
+        rVec.append({
+            "r": r_r,
+            "t": r_t
+        })
+        r_r, r_t, perp = rVec[0]["t"].snellslaw(self.sp, self.np, self.nm, 2)
+        rVec.append({
+            "r": r_r,
+            "t": r_t
+        })
         for n in range(1, N, 1):
-            l = c[n]['r_r'].snellslaw(self.sp, self.np, self.nm, 2)
-            c.append(l)
-            if c[n + 1]['r_r'].P < r.P * err or math.isnan(c[n + 1]['r_r'].P):
+            r_r, r_t, perp = rVec[n]['r'].snellslaw(self.sp, self.np, self.nm, 2)
+            rVec.append({
+                "r": r_r,
+                "t": r_t
+            })
+            if (rVec[n + 1]['r'].P < r.P * err).any() or np.isnan(rVec[n + 1]['r'].P).any():
                 break
-        return c
+
+    #     c = []
+    #     c.append(d)
+    #     for n in range(1, N, 1):
+    #         r_r, r_t = c[n].r.snellslaw(bead.sp, bead.np, bead.nm, 2)
+    #         c.append(r_r)
+    #
+    #     if r_vec(n + 1).r.P < r.P * err | isnan(r_vec(n + 1).r.P)
+    #         break;
+    #     end
+    #
+    # end
+
+        return rVec
 
 

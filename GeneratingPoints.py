@@ -37,7 +37,7 @@ def GeneratingCoordinates(rho, sphere_r, x0, y0):
     y = np.concatenate((yq[0: m], yq[0: m], -yq[0: m], -yq[0: m], yvt, yvb, yhl, yhr, yc))
 
     plt.scatter(x,y)
-    plt.show()
+    # plt.show()
     return x * sphere_r + x0, y * sphere_r + y0
 
 
