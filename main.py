@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 from time import process_time
 from GeneratingOneImage import GeneratingOneImage
 from TranslateCoordinates import TranslateCoordinates
+from generatingPerlinNoise import finalNoiseGeneration
+import matplotlib.cm as cm
 
 ################################################## Parameters ##########################################################
 
@@ -64,5 +66,8 @@ print("Elapsed CPU time to generate one image:", t1_stop-t1_start)
 print(a)
 print(b)
 print(c)
+img = finalNoiseGeneration(1000)
+plt.imshow(img, cmap=cm.gray)
+plt.show()
 ########################################################################################################################
 

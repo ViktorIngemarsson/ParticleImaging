@@ -3,16 +3,6 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from itertools import product, count
 
-# it produce more vectors pointing diagonally than vectors pointing along
-# an axis
-# # generate uniform unit vectors
-# def generate_unit_vectors(n):
-#     'Generates matrix NxN of unit length vectors'
-#     v = np.random.uniform(-1, 1, (n, n, 2))
-#     l = np.sqrt(v[:, :, 0] ** 2 + v[:, :, 1] ** 2).reshape(n, n, 1)
-#     v /= l
-#     return v
-
 def generate_unit_vectors(n):
     'Generates matrix NxN of unit length vectors'
     phi = np.random.uniform(0, 2*np.pi, (n, n))
@@ -84,10 +74,13 @@ def generate_2D_perlin_noise(size, ns):
 
     return m
 
-img = generate_2D_perlin_noise(1000, 1000) #(1000, 1000) först sen (1000, 10)
-img2 = generate_2D_perlin_noise(1000, 500)
-img3 = generate_2D_perlin_noise(1000, 10)
-
-img = img + img2 + img3
-plt.imshow(img, cmap=cm.gray)
-plt.show()
+def finalNoiseGeneration(resolution):
+    #The ratio between resolution and the other number (1000,500 and 10) needs to be ok
+    img = generate_2D_perlin_noise(resolution, 1000)
+    img2 = generate_2D_perlin_noise(resolution, 500)
+    img3 = generate_2D_perlin_noise(resolution, 10)
+    img = img + img2 + img3
+    img = (img - img.min())/(img.max()-img.min())*0.2
+    return(img)
+    #plt.imshow(img, cmap=cm.gray)
+    #plt.show()
