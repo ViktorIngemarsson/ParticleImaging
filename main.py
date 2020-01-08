@@ -1,11 +1,3 @@
-from Point import Point
-from Vector import Vector
-from Ray import Ray
-from ParticleSpherical import ParticleSpherical
-import numpy as np
-from LinePlaneCollision import LinePlaneCollision
-from GeneratingPoints import GeneratingCoordinates
-import matplotlib.pyplot as plt
 from time import process_time
 from GeneratingOneImage import GeneratingOneImage
 from TranslateCoordinates import TranslateCoordinates
@@ -24,8 +16,8 @@ rho = 360 * 10e9
 
 # Particle center [m]
 # The particle center is for now not changeable
-particle_center_x = 0
-particle_center_y = 0
+particle_center_x = -0.001/2
+particle_center_y = -0.001/2
 particle_center_z = 0
 
 # Polarization
@@ -48,7 +40,6 @@ resolution = 400  # Assuming quadratic image
 xRotation = 90
 yRotation = 0
 
-
 ###################################################
 #Timing the program
 ###################################################
@@ -61,7 +52,6 @@ GeneratingOneImage(particle_center_x, particle_center_y, particle_center_z, R,rh
 t1_stop = process_time()
 print("Elapsed CPU time to generate one image:", t1_stop-t1_start)
 ###################################################
-
 [a,b,c] = TranslateCoordinates(particle_center_x,particle_center_y,particle_center_z,xRotation,yRotation)
 print(a)
 print(b)
@@ -71,3 +61,5 @@ plt.imshow(img, cmap=cm.gray)
 plt.show()
 ########################################################################################################################
 
+
+#GeneratingOneImage(a, b, c, R,rho, nm, nP,pol_X, pol_Y, pol_Z, pol_Vx, pol_Vy, pol_Vz,resolution,lens_size_x,lens_size_y,scattering_number_of_iterations)
