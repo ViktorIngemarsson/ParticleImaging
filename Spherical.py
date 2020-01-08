@@ -135,10 +135,10 @@ class Spherical:
 
         p = ln.p1.plus(lnc.times(t1))
 
-        if delta < 0:
-            p.X = np.nan
-            p.Y = np.nan
-            p.Z = np.nan
+        if (delta < 0).any():
+            p.X[delta < 0] = np.nan
+            p.Y[delta < 0] = np.nan
+            p.Z[delta < 0] = np.nan
 
         return p
 

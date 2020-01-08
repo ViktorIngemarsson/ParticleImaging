@@ -173,7 +173,7 @@ class Plane:
         Zt = np.ones(c0.size())
         #Xt[c0.Z.times(c0.Z) > np.multiply(100, (c0.X.times(c0.X).plus(c0.Y.times(c0.Y))))] = 1
         Xt[np.power(c0.Z, 2) > np.multiply(100, (np.add(np.power(c0.X, 2), np.power(c0.Y, 2))))] = 1
-        Zt[np.power(c0.Z, 2) > np.multiply(100, np.add(np.power(c0.X, 2), np.power(c0.Y, 2)))] = 0
+        Zt[np.power(c0.Z, 2) > np.multiply(100, (np.add(np.power(c0.X, 2), np.power(c0.Y, 2))))] = 0
         c1 = c0.mtimes(Point(Xt, Yt, Zt))
 
         c2 = c0.mtimes(c1)
