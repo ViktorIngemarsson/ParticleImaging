@@ -10,14 +10,13 @@ import matplotlib.pyplot as plt
 
 def GeneratingOneImage(particle_center_x, particle_center_y, particle_center_z, R,rho, nm, nP,pol_X, pol_Y, pol_Z, pol_Vx, pol_Vy, pol_Vz,resolution,lens_size_x,lens_size_y,scattering_number_of_iterations):
     ### Produce one image.
-    c = Point(particle_center_x, particle_center_y, particle_center_z)
+    c = Point(0, 0, 0)
     bead = ParticleSpherical(c, R, nm, nP)
 
     pixels = np.zeros(resolution * resolution)
-    pixels_background = np.zeros(resolution * resolution)
 
     # Coordinates for the rays hitting the sphere
-    testX, testY = GeneratingCoordinates(rho, R, particle_center_x, particle_center_y)
+    testX, testY = GeneratingCoordinates(rho, R, 0, 0)
     number_of_rays = np.size(testX)
     P = np.ones(number_of_rays)  # Power[W]
     testZ = np.zeros(number_of_rays)
@@ -38,52 +37,26 @@ def GeneratingOneImage(particle_center_x, particle_center_y, particle_center_z, 
     # Define lens plane
     planeNormal = np.array([0, 0, 1])
     planePoint = np.array([0, 0, 1])  # Any point on the plane
-    x_interval_length = lens_size_x / resolution
-    y_interval_length = lens_size_y / resolution
 
     exiting_rays = s[-1]["t"]
-    # rayDirections = np.array(exiting_rays.v.Vx, exiting_rays.v.Vy, exiting_rays.v.Vz)
-    # rayPoints = np.array(exiting_rays.v.X, exiting_rays.v.Y, exiting_rays.v.Z)
     rayPowers = exiting_rays.P
-
-    # TODO: Första rayens värde blir nan, konstigt, resten fungerar.
-
-    # exiting_rays.v.Vx = exiting_rays.v.Vx[~np.isnan(exiting_rays.v.Vx)]
-    # exiting_rays.v.Vy = exiting_rays.v.Vy[~np.isnan(exiting_rays.v.Vy)]
-    # exiting_rays.v.Vz = exiting_rays.v.Vz[~np.isnan(exiting_rays.v.Vz)]
 
     for i in range(0, np.size(exiting_rays.v.Vx) - 1):
         print("Computing trajectory for ray:", i)
         rayDirection = np.array([exiting_rays.v.Vx[i], exiting_rays.v.Vy[i], exiting_rays.v.Vz[i]])
-        rayPoint = np.array([exiting_rays.v.X[i], exiting_rays.v.Y[i], exiting_rays.v.Z[i]])
+        rayPoint = np.array([exiting_rays.v.X[i], exiting_rays.v.Y[i], exiting_rays.v.Z[i]]) + np.array([particle_center_x,particle_center_y,0])
 
         Psi = LinePlaneCollision(planeNormal, planePoint, rayDirection, rayPoint, lens_size_x, lens_size_y)
         if Psi is not None:  # Ray hits the camera lens
-            x_pixel = np.round((Psi[0] + lens_size_x / 2) / lens_size_x * resolution)
-            y_pixel = np.round((Psi[1] + lens_size_y / 2) / lens_size_y * resolution)
-            pixel_index = (y_pixel - 1) * resolution + x_pixel
+            x_pixel = np.round((Psi[0] + lens_size_x / 2) / lens_size_x * (resolution-1))
+            y_pixel = np.round((Psi[1] + lens_size_y / 2) / lens_size_y * (resolution))
+            pixel_index = (y_pixel) * resolution + x_pixel
             pixels[int(pixel_index)] = pixels[int(pixel_index)] + rayPowers[i]
-    #
-    #     x_pixel_background = np.round((x[i] + lens_size_x / 2) / lens_size_x * resolution)
-    #     y_pixel_background = np.round((y[i] + lens_size_y / 2) / lens_size_y * resolution)
-    #     pixel_index_background = (y_pixel_background - 1) * resolution + x_pixel_background
-    #     pixels_background[int(pixel_index_background)] = pixels_background[int(pixel_index_background)] + 1
-    #
-    # # Make light background coherent
-    # for i in range(0, pixels_background.size - 1):
-    #     if pixels_background[i] > 0:
-    #         pixels_background[i] = 1
-    # pixels_background = 1 - pixels_background
-    #
+
     # Normalize the sphere-rays
-    pixels = pixels / max(pixels)
-    #
-    # # Add together the sphere-rays with all other light
-    # new_pixels = np.add(pixels_background, pixels)
-    #
-    # # Normalize the image
-    # new_pixels = new_pixels / max(new_pixels)
-    #
+    if max(pixels) > 0:
+        pixels = pixels / max(pixels)
+
     image = np.reshape(pixels, (resolution, resolution))
     fig = plt.figure(figsize=(1, 3))
     plt.imshow(image, cmap='gray_r', vmin=0, vmax=1)
