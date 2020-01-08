@@ -84,6 +84,10 @@ def generate_2D_perlin_noise(size, ns):
 
     return m
 
-img = generate_2D_perlin_noise(1000, 1000)
+img = generate_2D_perlin_noise(1000, 1000) #(1000, 1000) först sen (1000, 10)
+img2 = generate_2D_perlin_noise(1000, 500)
+img3 = generate_2D_perlin_noise(1000, 10)
+
+img = img + img2 + img3
 plt.imshow(img, cmap=cm.gray)
 plt.show()
