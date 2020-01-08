@@ -6,6 +6,7 @@ import numpy as np
 from LinePlaneCollision import LinePlaneCollision
 from GeneratingPoints import GeneratingCoordinates
 import matplotlib.pyplot as plt
+from time import process_time
 
 ################################################## Parameters ##########################################################
 
@@ -43,6 +44,13 @@ resolution = 1000  # Assuming quadratic image
 ########################################################################################################################
 
 ### Produce one image.
+
+
+###################################################
+#Timing the program
+###################################################
+t1_start = process_time()
+###################################################
 
 # Initialization Particle
 c = Point(particle_center_x, particle_center_y, particle_center_z)
@@ -109,6 +117,14 @@ new_pixels = np.add(pixels_background, pixels)
 new_pixels = new_pixels / max(new_pixels)
 
 image = np.reshape(pixels, (resolution, resolution))
+
+###################################################
+#Timing the program
+###################################################
+t1_stop = process_time()
+print("Elapsed CPU time to generate one image:", t1_stop-t1_start)
+###################################################
+
 
 fig = plt.figure(figsize=(1, 3))
 plt.imshow(image, cmap='gray_r', vmin=0, vmax=1)
