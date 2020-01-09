@@ -1,9 +1,17 @@
-import math
-import random
 import numpy as np
-import matplotlib.pyplot as plt
+
 
 def GeneratingCoordinates(rho, sphere_r, x0, y0):
+
+    """
+    Generates coordinates in a grid-like fashion within a circle (x,y)
+    :param rho: Ray density per square meter.
+    :param sphere_r: Particle radius [m].
+    :param x0: Coordinate for center of sphere
+    :param y0: Coordinate for center of sphere
+    :return: Grid-like coordinates within a circle
+    """
+
     n = int(np.ceil(np.sqrt(rho) * sphere_r))
     m = 0
     xt = np.zeros(n * n)
@@ -36,29 +44,4 @@ def GeneratingCoordinates(rho, sphere_r, x0, y0):
     x = np.concatenate((xq[0: m], -xq[0: m], -xq[0: m], xq[0: m], xvt, xvb, xhl, xhr, xc))
     y = np.concatenate((yq[0: m], yq[0: m], -yq[0: m], -yq[0: m], yvt, yvb, yhl, yhr, yc))
 
-    # plt.scatter(x,y)
-    # plt.show()
     return x * sphere_r + x0, y * sphere_r + y0
-
-
-  #  alpha = 0
-  #  b = np.round(alpha * np.sqrt(n))
-  #  phi = (np.sqrt(5) + 1) / 2
-  #  r = np.empty(n)
-  #  theta = np.empty(n)
-  #  for k in range(1, n):
-  #      r[k] = radius(k, n, b)
-  #      theta[k] = 2 * np.pi * k / phi ** 2
-  #  maxRadius = max(r)
-  #  r = r / maxRadius
-  #  x = r * np.cos(theta)
-  #  y = r * np.sin(theta)
-  #  return x * sphere_r, y * sphere_r
-
-
-def radius(k, n, b):
-    if k > n - b:
-        r = 1
-    else:
-        r = np.sqrt(k - 1 / 2) / np.sqrt(n - (b + 1) / 2)
-    return r

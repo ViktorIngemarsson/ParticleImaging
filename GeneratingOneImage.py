@@ -8,7 +8,28 @@ from GeneratingPoints import GeneratingCoordinates
 
 
 def GeneratingOneImage(particle_center_x, particle_center_y, R, rho, nm, nP, pol_X, pol_Y, pol_Z,
-                       pol_Vx, pol_Vy, pol_Vz, resolution, lens_size_x, lens_size_y, scattering_number_of_iterations):
+                       pol_Vx, pol_Vy, pol_Vz, resolution, lens_size, scattering_number_of_iterations):
+
+    """
+    This method generates an image based on the rays propagated from the light source, refracted through a particle,
+        and towards a camera lens.
+    :param particle_center_x: Particle center x coordinate.
+    :param particle_center_y: Particle center y coordinate.
+    :param R: Particle radius [m].
+    :param rho: Ray density per square meter.
+    :param nm: Refractive index of the medium before ray impact.
+    :param nP: Refractive index of the medium after ray impact.
+    :param pol_X: Polarization
+    :param pol_Y: Polarization
+    :param pol_Z: Polarization
+    :param pol_Vx: Polarization
+    :param pol_Vy: Polarization
+    :param pol_Vz: Polarization
+    :param resolution: Resolution of the generated image. Assuming quadratic image.
+    :param lens_size: Camera lens size [m], assuming quadratic lens.
+    :param scattering_number_of_iterations: # Maximum number of iterations the rays are scattered within the particle.
+    :return: The particle captures by the camera as an image.
+    """
 
     # Produce one image.
     c = Point(0, 0, 0)
@@ -32,7 +53,7 @@ def GeneratingOneImage(particle_center_x, particle_center_y, R, rho, nm, nP, pol
     pol = pol.versor()
 
     r = Ray(v, P, pol)
-    s = bead.scattering(r, scattering_number_of_iterations)
+    s = bead.scattering(r=r, N=scattering_number_of_iterations)
 
     plane_normal = np.array([0, 0, 1])  # Define lens plane
     plane_point = np.array([0, 0, 1])  # Any point on the plane
@@ -45,10 +66,10 @@ def GeneratingOneImage(particle_center_x, particle_center_y, R, rho, nm, nP, pol
         ray_point = np.array([exiting_rays.v.X[i], exiting_rays.v.Y[i], exiting_rays.v.Z[i]]) + np.array(
             [particle_center_x, particle_center_y, 0])
 
-        psi = LinePlaneCollision(plane_normal, plane_point, ray_direction, ray_point, lens_size_x, lens_size_y)
+        psi = LinePlaneCollision(plane_normal, plane_point, ray_direction, ray_point, lens_size)
         if psi is not None:  # Ray hits the camera lens
-            x_pixel = np.round((psi[0] + lens_size_x / 2) / lens_size_x * (resolution-1))
-            y_pixel = np.round((psi[1] + lens_size_y / 2) / lens_size_y * resolution)
+            x_pixel = np.round((psi[0] + lens_size / 2) / lens_size * (resolution-1))
+            y_pixel = np.round((psi[1] + lens_size / 2) / lens_size * resolution)
             pixel_index = y_pixel * resolution + x_pixel
             pixels[int(pixel_index)] = pixels[int(pixel_index)] + ray_power[i]
 
