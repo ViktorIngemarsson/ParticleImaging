@@ -3,6 +3,7 @@ from GeneratingOneImage import GeneratingOneImage
 from TranslateCoordinates import TranslateCoordinates
 from GeneratingPerlinNoise import FinalNoiseGeneration
 import matplotlib.cm as cm
+import matplotlib.pyplot as plt
 
 ################################################## Parameters ##########################################################
 
@@ -13,14 +14,14 @@ nm = 1.33  # Medium refractive index
 noiseIntensity = 0.2
 
 # Particle
-R = 0.00005  # Particle radius [m]
+R = 0.000005  # Particle radius [m]
 nP = 1.50  # Particle refractive index
 rho = 360 * 10e9
 
 # Particle center [m]
 # The particle center is for now not changeable
-particle_center_x = -0.001/2
-particle_center_y = -0.001/2
+particle_center_x = 0.00003
+particle_center_y = 0.00003
 particle_center_z = 0
 
 # Polarization

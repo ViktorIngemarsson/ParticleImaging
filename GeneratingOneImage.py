@@ -6,6 +6,7 @@ import numpy as np
 from LinePlaneCollision import LinePlaneCollision
 from GeneratingPoints import GeneratingCoordinates
 import matplotlib.pyplot as plt
+from generatingPerlinNoise import finalNoiseGeneration
 
 
 def GeneratingOneImage(particle_center_x, particle_center_y, particle_center_z, R,rho, nm, nP,pol_X, pol_Y, pol_Z, pol_Vx, pol_Vy, pol_Vz,resolution,lens_size_x,lens_size_y,scattering_number_of_iterations):
@@ -58,6 +59,11 @@ def GeneratingOneImage(particle_center_x, particle_center_y, particle_center_z, 
         pixels = pixels / max(pixels)
 
     image = np.reshape(pixels, (resolution, resolution))
+
+    img = finalNoiseGeneration(1000)
+
+    image = image + img
+
     fig = plt.figure(figsize=(1, 3))
     plt.imshow(image, cmap='gray_r', vmin=0, vmax=1)
     fig.suptitle('Ray optics for the sphere', fontsize=20)
