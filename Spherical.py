@@ -6,24 +6,31 @@ import copy
 
 class Spherical:
     def __init__(self, centers, radiuses):
+        '''
+        Generates set of spherical objects
+        :param centers: centers of sphere as point objects
+        :param radiuses: radius of spheres
+        '''
         self.c = centers
         self.r = radiuses
 
     def disp(self):
+        '''
+        Displays spherical objects state
+        '''
         print(self.c.X)
         print(self.c.Y)
         print(self.c.Z)
         print(self.r)
 
     def translate(self, dp):
-        # TRANSLATE 3D translation of sphere set
-        # SPt = TRANSLATE(SP,dP) translates set of spheres SP by dP
-        #    If dP is a Point, the translation corresponds to the
-        #   coordinates X, Y and Z.
-        #   If dP is a Vector, the translation corresponds to the
-        #   components Vx, Vy and Vz.
-        #
-        # See also Plane, Point, Vector.
+        '''
+        Translate position of spherical object
+        If dp is point the translation corresponds to the coordinates X, Y and Z.
+        If dP is a Vector, the translation corresponds to the components Vx, Vy and Vz.
+        :param dp: point or vector to translate set of spherical objects
+        :return: new set of spherical objects
+        '''
         sp = copy.deepcopy(self)
         sp_t = sp
         sp_t.c = sp.c.translate(dp)
