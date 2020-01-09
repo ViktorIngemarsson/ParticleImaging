@@ -3,10 +3,20 @@ import numpy as np
 import copy
 from mpl_toolkits.mplot3d import axes3d, Axes3D
 import matplotlib.pyplot as plt
+from SLine import SLine
 
 
-class Vector(Point):  # Inherits from Superclass Point
+class Vector(Point):
     def __init__(self, X, Y, Z, xcomponent, ycomponent, zcomponent):
+        '''
+        Generates a set of vectos
+        :param X: Coordinates x
+        :param Y: Coordinates y
+        :param Z: Coordinates z
+        :param xcomponent: Vector component x
+        :param ycomponent: Vector component y
+        :param zcomponent: Vector component z
+        '''
         super().__init__(X, Y, Z)
         self.X = X
         self.Y = Y
@@ -16,6 +26,9 @@ class Vector(Point):  # Inherits from Superclass Point
         self.Vz = zcomponent
 
     def disp(self):
+        '''
+        Display set of vectors
+        '''
         print(self.X)
         print(self.Y)
         print(self.Z)
@@ -24,12 +37,13 @@ class Vector(Point):  # Inherits from Superclass Point
         print(self.Vz)
 
     def plot(self, varargin=None):
+        '''
+        Plot set of vectors
+        '''
         fig = plt.figure()
         ax = Axes3D(fig)
         ax.quiver(self.X, self.Y, self.Z, self.Vx, self.Vy, self.Vz, length=0.1, normalize=True)
         plt.show()
-
-        return
 
     def plot_multiple_vectors(self, moarVectors, radius):
         fig = plt.figure()
@@ -42,7 +56,6 @@ class Vector(Point):  # Inherits from Superclass Point
         x = np.cos(u) * np.sin(v)
         y = np.sin(u) * np.sin(v)
         z = np.cos(v)
-        #radius = 1e-6
         ax.plot_surface(np.multiply(x, radius), np.multiply(y, radius), np.multiply(z, radius), rstride=1, cstride=1,
                        color="g", alpha=0.5, linewidth=0)
         plt.show()
@@ -50,57 +63,46 @@ class Vector(Point):  # Inherits from Superclass Point
         return
 
     def xrotation(self, phi):
-        # XROTATION Rotation around x - axis of vector set
-        #
-        # Vr = XROTATION(V, phi) rotates set of vectors V around x - axis
-        # by an angle phi[rad].
-        # It rotates both the coordinates X, Y and Z and the components Vx, Vy and Vz.
-        # See also Vector.
+        '''
+        Rotates set of vectors V around x - axis
+        :param phi: angle phi[rad] rotated around x - axis
+        :return: new set of vectors
+        '''
         v = copy.deepcopy(self)
-
         v_r = Point.xrotation(v, phi)
         v_r.Vy = v.Vy * np.cos(phi) - v.Vz * np.sin(phi)
         v_r.Vz = v.Vy * np.sin(phi) + v.Vz * np.cos(phi)
         return v_r
 
     def yrotation(self, phi):
-        # YROTATION Rotation around x - axis of vector set
-        #
-        # Vr = YROTATION(V, phi) rotates set of vectors V around y - axis
-        # by an angle phi[rad].
-        # It rotates both the coordinates X, Y and Z and the components Vx, Vy and Vz.
-        # See also Vector.
+        '''
+        Rotates set of vectors V around y - axis
+        :param phi: angle phi[rad] rotated around y - axis
+        :return: new set of vectors
+        '''
         v = copy.deepcopy(self)
-
         v_r = Point.yrotation(v, phi)
         v_r.Vx = v.Vx * np.cos(phi) + v.Vz * np.sin(phi)
         v_r.Vz = -v.Vx * np.sin(phi) + v.Vz * np.cos(phi)
         return v_r
 
     def zrotation(self, phi):
-        # ZROTATION Rotation around x - axis of vector set
-        #
-        # Vr = ZROTATION(V, phi) rotates set of vectors V around z - axis
-        # by an angle phi[rad].
-        # It rotates both the coordinates X, Y and Z and the components Vx, Vy and Vz.
-        # See also Vector.
+        '''
+        Rotates set of vectors V around z - axis
+        :param phi: angle phi[rad] rotated around z - axis
+        :return: new set of vectors
+        '''
         v = copy.deepcopy(self)
-
         v_r = Point.zrotation(v, phi)
         v_r.Vx = v.Vx * np.cos(phi) - v.Vy * np.sin(phi)
         v_r.Vy = v.Vx * np.sin(phi) + v.Vy * np.cos(phi)
-
         return v_r
 
     def uminus(self):
-        # UMINUS Unitary minus(components)
-        #
-        # Vm = UMINUS(V) Unitary minus.
-        # -V inverts the components Vx, Vy and Vz of V.
-        # The coordinates X, Y and Z are left unchanged.
-        #
-        # See also Vector.
-
+        '''
+        Inverts the components Vx, Vy and Vz of V.
+        :return: Inverted vector
+        '''
         v_m = copy.deepcopy(self)
         v_m.Vx = -v_m.Vx
         v_m.Vy = -v_m.Vy
@@ -109,32 +111,23 @@ class Vector(Point):  # Inherits from Superclass Point
         return v_m
 
     def plus(self, v2):
-        # PLUS Binary addition(components)
-        #
-        # V = PLUS(V1, V2) Binary addition(V=V1 + V2).
-        # The components Vx, Vy and Vz of V are the sum of the
-        # components of V1 and V2.
-        # The coordinates X, Y and Z of V are the ones of V1.
-        #
-        # See also Vector.
-
+        '''
+        The components Vx, Vy and Vz of V are the sum of the components of V1 and V2.
+        :param v2: vector to be added to self
+        :return: new summarized vector
+        '''
         v = copy.deepcopy(self)
         v.Vx = self.Vx + v2.Vx
         v.Vy = self.Vy + v2.Vy
         v.Vz = self.Vz + v2.Vz
-
         return v
 
     def minus(self, v2):
-        # PLUS Binary addition(components)
-        #
-        # V = MINUS(V1, V2) Binary subtraction(V=V1 - V2).
-        # The components Vx, Vy and Vz of V are the difference of the
-        # components of V1 and V2.
-        # The coordinates X, Y and Z of V are the ones of V1.
-        #
-        # See also Vector.
-
+        '''
+        The components Vx, Vy and Vz of V are the difference of the components of V1 and V2.
+        :param v2: vector to be subtracted from self
+        :return: new vector of difference in vector components
+        '''
         v = copy.deepcopy(self)
         v.Vx = self.Vx - v2.Vx
         v.Vy = self.Vy - v2.Vy
@@ -143,26 +136,12 @@ class Vector(Point):  # Inherits from Superclass Point
         return v
 
     def mtimes(self, b):
-        # MTIMES Vector product(components)
-        #
-        # V = MTIMES(V1, V2) Vector product(V=V1 * V2).
-        # V is a Vector whose components Vx, Vy and Vz are the vector
-        # product of the components of V1 and V2.
-        # The coordinates X, Y and Z of V are the ones of V1.
-        #
-        # V = MTIMES(A, V2) Product by scalar(P=A * V2).
-        # V is a Vector whose components Vx, Vy and Vz are the components
-        # of V2 multiplied by the scalar( or scalar matrix) A.
-        # The coordinates X, Y and Z of V are the ones of V2.
-        #
-        # V = MTIMES(P1, B) Product by scalar(P=P1 * B).
-        # V is a Vector whose components Vx, Vy and Vz are the components
-        # of V1 multiplied by the scalar( or scalar matrix) B.
-        # The coordinates X, Y and Z of V are the ones of V1.
-        #
-        # See also Vector.
+        '''
+        Computes vector product of self and b
+        :param b: vector or scalar to compute product with self
+        :return: vector/scalar product
+        '''
         a = copy.deepcopy(self)
-
         if isinstance(a, Vector) & isinstance(b, Vector):
             v1 = copy.deepcopy(a)
             v2 = b
@@ -194,23 +173,11 @@ class Vector(Point):  # Inherits from Superclass Point
         return m
 
     def times(self, b):
-        # TIMES Scalar product(components)
-        #
-        # M = TIMES(V1, V2) Scalar product(M=V1. * V2).
-        # M is a scalar matrix obtained by the scalar product
-        # of the components Vx, Vy and Vz of V1 and V2.
-        #
-        # V = TIMES(A, V2) Product by scalar(V=A. * V2).
-        # V is a Vector whose components Vx, Vy and Vz are the components
-        # of V2 multiplied by the scalar( or scalar matrix) A.
-        # The coordinates X, Y and Z of V are the ones of V2.
-        #
-        # V = TIMES(V1, B) Product by scalar(V=V1. * B).
-        # V is a Vector whose components Vx, Vy and Vz are the components
-        # of V1 multiplied by the scalar( or scalar matrix) B.
-        # The coordinates X, Y and Z of V are the ones of V1.
-        #
-        # See also Vector.
+        '''
+        Computes scalar product of self and b
+        :param b: vector or scalar
+        :return:scalar matrix if b is vector, vector if b is scalar
+        '''
         a = copy.deepcopy(self)
 
         if isinstance(a, Vector) & isinstance(b, Vector):
@@ -241,14 +208,11 @@ class Vector(Point):  # Inherits from Superclass Point
         return m
 
     def rdivide(self, b):
-        # RDIVIDE Right division(components)
-        #
-        # Vd = RDIVIDE(V, B) Right division(Vd=V. / B).
-        # V is a Vector whose components Vx, Vy and Vz are the components
-        # of V divided by the scalar( or scalar matrix) B.
-        #
-        # See also Vector.
-
+        '''
+        Right division self/b
+        :param b: scalar or scalar matrix
+        :return: vector, self/b
+        '''
         v_d = copy.deepcopy(self)
         v_d.Vx = np.divide(self.Vx, b)
         v_d.Vy = np.divide(self.Vy, b)
@@ -257,42 +221,30 @@ class Vector(Point):  # Inherits from Superclass Point
         return v_d
 
     def versor(self):
-        # VERSOR Unitary vector
-        #
-        # U = VERSOR(V) returns the unit vector set corresponding to
-        # the vector set V.
-        # The coordinates X, Y and Z of U are the ones of V.
-        #
-        # See also Vector.
+        '''
+        Return unit vector of self
+        :return: unit vector of self
+        '''
         v = copy.deepcopy(self)
         v_temp = np.transpose(np.array([v.Vx, v.Vy, v.Vz]))
         norm = np.linalg.norm(v_temp, axis=1)
-
         return v.rdivide(norm)
 
     def topoint(self):
-        # TOPOINT Vector to point
-        #
-        # P = TOPOINT(V) converts the set of vectors V into the set of
-        # points P.The coordinates X, Y and Z of the points are the
-        # components of V.
-        #
-        # See also Vector, Point.
+        '''
+        Converts set of vectors, self, to set of points
+        :return: set of points
+        '''
         v = copy.deepcopy(self)
-
         return Point(np.real(v.Vx), np.real(v.Vy), np.real(v.Vz))
 
     def toline(self):
-        from SLine import SLine
-        # TOLINE Vector to line
-        #
-        # LN = TOLINE(V) converts the set of vectors V into the set of
-        # lines LN.The coordinates X, Y and Z of the initial points
-        # of the lines are the coordinates of V and the coordinates
-        # of the final points are the sum of the coordinates of V and
-        # of the components of V.
-        #
-        # See also Vector, SLine.
+        '''
+        Converts set of vectors to set of lines.
+        The coordinates X, Y and Z of the initial points ...
+        of the lines are the coordinates of V and the...
+        coordinates of the final points are the sum of the coordinates of V and
+        :return: set of lines
+        '''
         v = copy.deepcopy(self)
-
         return SLine(Point(v.X, v.Y, v.Z), Point(v.X + np.real(v.Vx), v.Y + np.real(v.Vy), v.Z + np.real(v.Vz)))

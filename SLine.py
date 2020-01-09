@@ -5,10 +5,18 @@ import copy
 
 class SLine:
     def __init__(self, p1, p2):
+        '''
+        Generates a line from two points
+        :param p1: first point
+        :param p2: second point
+        '''
         self.p1 = p1
         self.p2 = p2
 
     def disp(self):
+        '''
+        Displays set of lines state
+        '''
         print(self.p1.X)
         print(self.p1.Y)
         print(self.p1.Z)
@@ -17,15 +25,13 @@ class SLine:
         print(self.p2.Z)
 
     def translate(self, dp):
-        # TRANSLATE 3D translation of line set
-        #
-        # LNt = TRANSLATE(LN,dP) translates set of lines LN by dP.
-        #   If dP is a Point, the translation corresponds to the
-        #   coordinates X, Y and Z.
-        #   If dP is a Vector, the translation corresponds to the
-        #   components Vx, Vy and Vz.
-        #
-        # See also SLine, Point, Vector.
+        '''
+        Translate set of lines, seld, by point or vector dp.
+        If dP is a Point, the translation corresponds to the coordinates X, Y and Z.
+        If dP is a Vector, the translation corresponds to the components Vx, Vy and Vz.
+        :param dp: point of translation
+        :return:
+        '''
         ln = copy.deepcopy(self)
         ln_t = ln
         ln_t.p1 = ln_t.p1.translate(dp)
@@ -33,13 +39,11 @@ class SLine:
         return ln_t
 
     def xrotation(self, phi):
-        # XROTATION Rotation around x-axis of line set
-        #
-        # LNr = XROTATION(LN,phi) rotates set of lines LN around x-axis
-        #   by an angle phi [rad].
-        #
-        # See also SLine.
-
+        '''
+        Rotates set of lines around x - axis
+        :param phi: angle phi[rad] rotated around x - axis
+        :return: new set of lines
+        '''
         ln = copy.deepcopy(self)
         ln_r = ln
         ln_r.p1 = ln_r.p1.xrotation(phi)
@@ -47,13 +51,11 @@ class SLine:
         return ln_r
 
     def yrotation(self, phi):
-        # YROTATION Rotation around y-axis of line set
-        #
-        # LNr = YROTATION(LN,phi) rotates set of lines LN around y-axis
-        #   by an angle phi [rad].
-        #
-        # See also SLine.
-
+        '''
+        Rotates set of lines around y - axis
+        :param phi: angle phi[rad] rotated around y - axis
+        :return: new set of lines
+        '''
         ln = copy.deepcopy(self)
         ln_r = ln
         ln_r.p1 = ln_r.p1.yrotation(phi)
@@ -61,39 +63,34 @@ class SLine:
         return ln_r
 
     def zrotation(self, phi):
-        # ZROTATION Rotation around z-axis of line set
-        #
-        # LNr = ZROTATION(LN,phi) rotates set of lines LN around z-axis
-        #   by an angle phi [rad].
-        #
-        # See also SLine.
-
+        '''
+        Rotates set of lines around z - axis
+        :param phi: angle phi[rad] rotated around z - axis
+        :return: new set of lines
+        '''
         ln = copy.deepcopy(self)
-
         ln_r = ln
         ln_r.p1 = ln_r.p1.zrotation(phi)
         ln_r.p2 = ln_r.p2.zrotation(phi)
         return ln_r
 
     def numel(self):
-        # NUMEL umber of lines
-        #
-        # N = NUMEL(LN) number of lines in set LN.
-        #
-        # See also SLine.
+        '''
+        Calculates number of lines in set, self.
+        :return: number of lines in set
+        '''
         ln = copy.deepcopy(self)
         return ln.p1.size
 
     def size(self, varargin = None):
-        # SIZE Size of line set
-        #
-        # S = SIZE(LN) returns a two-element row vector with the number
-        #   of rows and columns in the line set LN.
-        #
-        # S = SIZE(LN,DIM) returns the length of the dimension specified
-        #   by the scalar DIM in the line set LN.
-        #
-        # See also SLine.
+        '''
+        Returns a two-element row vector with the number...
+        of rows and columns in the line set LN.
+        If argument is given returns the length of dimension...
+        specified by the scalar DIM, input, in the line set, self.
+        :param varargin:
+        :return:
+        '''
         ln = copy.deepcopy(self)
         if varargin is None:
             s = ln.p1.size()
@@ -102,26 +99,21 @@ class SLine:
         return s
 
     def angle(self,  ln2):
-        # ANGLE Angle (Components)
-        #
-        # PHI = ANGLE(LN1,LN2) calculates the angle between the set of
-        #   lines LN1 and LN2.
-        #
-        # See also SLine.
+        '''
+        Calculates the angle between the set of lines, self and ln2.
+        :param ln2: set of lines
+        :return: degrees between line
+        '''
         ln1 = copy.deepcopy(self)
         phi = ln1.p2.minus(ln1.p1).angle(ln2.p2.minus(ln2.p1))
         return phi
 
     def versor(self):
+        '''
+        Returns unitvectors of lines in set
+        :return: Returns unitvectors of lines in set
+        '''
         from Vector import Vector
-        # VERSOR Unitary vector
-        #
-        # U = VERSOR(LN) returns the unit vector set corresponding to
-        #   the line set LN.
-        #   The coordinates X, Y and Z of U are the ones of the initial
-        #   point of LN.
-        #
-        # See also SLine.
         ln = copy.deepcopy(self)
         v = Vector(np.zeros(ln.shape()), np.zeros(ln.shape()), np.zeros(ln.shape()), ln.p2.X - ln.p1.X,
                    ln.p2.Y - ln.p1.Y,
@@ -130,16 +122,11 @@ class SLine:
         return u
 
     def tovector(self):
+        '''
+        Convert lines to vectors
+        :return: set of vectors
+        '''
         from Vector import Vector
-        # TOVECTOR Line to vector
-        #
-        # V = TOVECTOR(LN) converts the set of lines LN into the set of
-        #   vectors V. The coordinates X, Y and Z of V correspond to
-        #   the coordinates of the first point of LN and the components
-        #   Vx, Vy and Vz of V correspond to the difference between the
-        #   coordinates of the first and second point of LN.
-        #
-        # See also SLine, Vector.
         ln = copy.deepcopy(self)
         v = Vector(ln.p1.X, ln.p1.Y, ln.p1.Z, ln.p2.X - ln.p1.X, ln.p2.Y - ln.p1.Y, ln.p2.Z - ln.p1.Z)
         return v
