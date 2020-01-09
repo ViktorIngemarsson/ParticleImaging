@@ -12,9 +12,12 @@ import copy
 
 class Ray:
     def __init__(self, v, P, pol):
-        # v       directions (Vector)
-        # P       powers (matrix)
-        # pol     polarizations (Vector)
+        '''
+        Generates set of rays
+        :param v: vectors
+        :param P: power of rays
+        :param pol: polarisation of rays
+        '''
         self.v = v
         self.P = P
         self.pol = pol
@@ -23,6 +26,9 @@ class Ray:
         self.pol.Z = v.Z
 
     def disp(self):
+        '''
+        Displays set of ray state state
+        '''
         print(self.v.X)
         print(self.v.Y)
         print(self.v.Z)
@@ -35,6 +41,15 @@ class Ray:
         print(self.pol.Vz)
 
     def translate(self, dp):
+        '''
+        Translates set of rays R by dP.
+        If dP is a Point, the translation corresponds to the...
+        coordinates X, Y and Z.
+        If dP is a Vector, the translation corresponds to the...
+        components Vx, Vy and Vz.
+        :param dp:
+        :return:
+        '''
         r = copy.deepcopy(self)
         r_t = r
         r_t.v = r.v.translate(dp)
@@ -42,6 +57,11 @@ class Ray:
         return r_t
 
     def xrotation(self, phi):
+        '''
+        Rotates set of rays around x - axis
+        :param phi: angle phi[rad] rotated around x-axis
+        :return: new set of vectors
+        '''
         r = copy.deepcopy(self)
         r_r = r
         r_r.v = r.v.xrotation(phi)
@@ -49,6 +69,11 @@ class Ray:
         return r_r
 
     def yrotation(self, phi):
+        '''
+        Rotates set of rays around y - axis
+        :param phi: angle phi[rad] rotated around y - axis
+        :return: new set of vectors
+        '''
         r = copy.deepcopy(self)
         r_r = r
         r_r.v = r.v.yrotation(phi)
@@ -56,6 +81,11 @@ class Ray:
         return r_r
 
     def zrotation(self, phi):
+        '''
+        Rotates set of rays around z - axis
+        :param phi: angle phi[rad] rotated around z - axis
+        :return: new set of vectors
+        '''
         r = copy.deepcopy(self)
         r_r = r
         r_r.v = r.v.zrotation(phi)
@@ -63,38 +93,71 @@ class Ray:
         return r_r
 
     def numel(self):
+        '''
+        Gives size of set of rays
+        :return: number of rays in set
+        '''
         r = copy.deepcopy(self)
         return np.size(r.v.X)
 
     def size(self, varargin=None):
+        '''
+        Returns a two-element row vector with the number ...
+        of rows and columns in the ray set R.
+        If given argument returns the length of the dimension specified
+        by the scalar DIM in the ray set self.
+        :param varargin:
+        :return: size of ray set
+        '''
         if varargin != None:
             return np.shape(np.asarray(self.v.X), varargin[0])
         else:
             return np.shape(np.asarray(self.v.X))
 
-    def uplus(self):
-        return copy.deepcopy(self)
-
     def uminus(self):
+        '''
+        Returns ray with inverted vector values
+        :return: inverted set of rays
+        '''
         r_m = copy.deepcopy(self)
         r_m.v = r_m.v.uminus()
         return r_m
 
     def angle(self,r2):
+        '''
+        Calculates angle between set of ray, self and r2
+        :param r2: set of rays
+        :return: angle between set of rays
+        '''
         r1 = copy.deepcopy(self)
         return r1.v.angle(r2.v)
 
     def versor(self):
+        '''
+        Calculates unitvector of set of rays
+        :return: Set of unit vectors
+        '''
         return copy.deepcopy(self).v.versor()
 
     def toline(self):
+        '''
+        Convert set of rays to set of lines
+        :return: set of lines
+        '''
         return copy.deepcopy(self).v.toline()
 
-
-    # TODO: I matlab så används nargin för att avgöra hur många input-argument functionen tar emot, hur gör vi det i python,
-    #   och kan de olika funktionerna ta emot olika många inputs?
-
     def snellslaw(self, s, n1, n2, n):
+        '''
+        Calculates the reflection and refraction between the set of rays, self,...
+        and the spherical object s. Where the rays comes from medium 1 with...
+        refractive index n1 into spherical object with refractive index...
+        of n2. Calculates what happens looking at the n:th intersection between the two.
+        :param s: Particle spherical object
+        :param n1: refractive index that rays are coming from
+        :param n2: refractive index of the spherical object
+        :param n: what index of intersection to look at
+        :return:
+        '''
         r = copy.deepcopy(self)
         if isinstance(s, Plane):
             pl = s
@@ -108,58 +171,39 @@ class Ray:
             theta_i = r.toline().angle(perp)
             if (theta_i > np.pi / 2).any():
                 theta_i[theta_i > np.pi / 2] = -theta_i[theta_i > np.pi / 2] + np.pi
-            # if theta_i > np.pi / 2:
-            #     theta_i = np.pi - theta_i
 
             # Transmission angle
             theta_t = np.arcsin(n1 / n2 * np.sin(theta_i))
 
             # translation to origin(0)
             r0 = r.translate(p.uminus())
-            # pl0 = pl.translate(-p); %
             perp0 = perp.translate(p.uminus())
-            # p0 = p.translate(-p); %
 
             # rotation around z(1)
             phi1 = np.arctan2(perp0.p2.X, perp0.p2.Y)
             r1 = r0.zrotation(phi1)
-            # pl1 = pl0.zrotation(phi1); %
             perp1 = perp0.zrotation(phi1)
-            # p1 = p0.zrotation(phi1); %
 
             # rotation around x(2)
             phi2 = np.arctan2(perp1.p2.Y, perp1.p2.Z)
             r2 = r1.xrotation(phi2)
-            # pl2 = pl1.xrotation(phi2); %
-            # perp2 = perp1.xrotation(phi2); %
-            # p2 = p1.xrotation(phi2); %
 
             # rotation around z(3)
             phi3 = np.arctan2(r2.v.X, r2.v.Y)
             r3 = r2.zrotation(phi3)
-            # pl3 = pl2.zrotation(phi3); %
-            # perp3 = perp2.zrotation(phi3); %
-            # p3 = p2.zrotation(phi3); %
 
-            # Rs and Ts(appliesto r3.pol.Vx)
             output_dictS = Ray.rtcoeffs(theta_i, n1, n2)
             Rs = output_dictS["Rs"]
             Ts = output_dictS["Ts"]
             rs = output_dictS["rs"]
             ts = output_dictS["ts"]
 
-            # Rp and Tp(r3.pol.Vy and Vz)
             output_dictP = Ray.rtcoeffp(theta_i, n1, n2)
             Rp = output_dictP["Rp"]
             Tp = output_dictP["Tp"]
             rp = output_dictP["rp"]
             tp = output_dictP["tp"]
 
-            # Reflected ray
-            # if r3.v.Z > 0:
-            #     r_r3 = r3.xrotation(2 * theta_i).uminus()
-            # else:
-            #     r_r3 = r3.xrotation(-2 * theta_i).uminus()
             dtheta = theta_i *2
             dtheta[r3.v.Z < 0] = -dtheta[r3.v.Z < 0]
             r_r3 = r3.xrotation(dtheta).uminus()
@@ -180,15 +224,6 @@ class Ray:
             r_r3.pol.Y = np.zeros(np.shape(r))
             r_r3.pol.Z = np.zeros(np.shape(r))
 
-            # transmitted ray
-            # if r3.v.Z > 0:
-            #     r_t3 = r3.xrotation(-np.pi + theta_i - theta_t).uminus()
-            #     r_t3.pol.Vy = -r_t3.pol.Vy
-            #     r_t3.pol.Vz = -r_t3.pol.Vz
-            # else:
-            #     r_t3 = r3.xrotation(np.pi - theta_i + theta_t).uminus()
-            #     r_t3.pol.Vy = -r_t3.pol.Vy
-            #     r_t3.pol.Vz = -r_t3.pol.Vz
             dtheta = -np.pi + theta_i - theta_t
             dtheta[r3.v.Z < 0] = -dtheta[r3.v.Z < 0]
             r_t3 = r3.xrotation(np.real(dtheta)).uminus()
@@ -213,24 +248,6 @@ class Ray:
             r_t3.pol.Y = np.zeros(np.shape(r))
             r_t3.pol.Z = np.zeros(np.shape(r))
 
-            # ManagesTIR
-            # indices = [1, 2, 3]
-            # tir = [j for (i, j) in zip(np.imag(theta_t), indices) if i != 0]
-            # tir = [x - 1 for x in tir]
-            # if np.imag(theta_t) != 0:
-            #     # tir = np.imag(theta_t) != 0
-            #     r_r3.P = r.P
-            #     r_r3.pol.Vx = np.abs(r_r3.pol.Vx)
-            #     r_r3.pol.Vy = np.abs(r_r3.pol.Vy)
-            #     r_r3.pol.Vz = np.abs(r_r3.pol.Vz)
-            #
-            #     r_t3.P = 0
-            #     r_t3.v.Vx = np.real(r_t3.v.Vx)
-            #     r_t3.v.Vy = np.real(r_t3.v.Vy)
-            #     r_t3.v.Vz = np.real(r_t3.v.Vz)
-            #     r_t3.pol.Vx = np.abs(r_t3.pol.Vx)
-            #     r_t3.pol.Vy = np.abs(r_t3.pol.Vy)
-            #     r_t3.pol.Vz = np.abs(r_t3.pol.Vz)
             tir = np.imag(theta_t) != 0
 
             r_r3.P[tir] = r.P[tir]
@@ -279,6 +296,19 @@ class Ray:
 
     @staticmethod
     def rtcoeffs(theta_i, n1, n2):
+        '''
+        calculates the Fresnel coefficient for an s-polarized ray impinging with...
+        incidence angle theta_i on a planar surface. The refractive...
+        indices of the incoming medium is n1 and the one of the...
+        transmission medium n2.
+        :param theta_i:
+        :param n1:
+        :param n2:
+        :return Rs: Fresnel reflection coefficient for power
+        :return Ts: Fresnel transmission coefficient for power
+        :return rs: Fresnel reflection coefficient for electric field
+        :return ts: Fresnel transmission coefficient for electric field
+        '''
         theta_t = np.arcsin(n1 / n2 * np.sin(theta_i))
 
         rs = np.divide((n1 * np.cos(theta_i) - n2 * np.cos(theta_t)), (n1 * np.cos(theta_i) + n2 * np.cos(theta_t)))
@@ -296,6 +326,19 @@ class Ray:
 
     @staticmethod
     def rtcoeffp(theta_i, n1, n2):
+        '''
+        calculates the Fresnel coefficient for a p-polarized ray impinging with
+        incidence angle theta_i on a planar surface. The refractive
+        indices of the incoming medium is n1 and the one of the
+        transmission medium n2.
+        :param theta_i:
+        :param n1:
+        :param n2:
+        :return Rp: Fresnel reflection coefficient for power
+        :return Tp: Fresnel transmission coefficient for power
+        :return rp: Fresnel reflection coefficient for electric field
+        :return tp: Fresnel transmission coefficient for electric field
+        '''
         theta_t = np.arcsin(n1 / n2 * np.sin(theta_i))
 
         rp = np.divide((n1 * np.cos(theta_t) - n2 * np.cos(theta_i)), (n1 * np.cos(theta_t) + n2 * np.cos(theta_i)))
@@ -310,54 +353,3 @@ class Ray:
             "rp": rp,
             "tp": tp
         }
-
-    @staticmethod
-    def beam2rays(b):
-
-        X = np.dot(b.r, np.cos(b.phi))
-        Y = b.r.dot(np.sin(b.phi))
-        Z = np.zeros(np.shape(b.r))
-        Vx = np.zeros(np.shape(b.r))
-        Vy = np.zeros(np.shape(b.r))
-        Vz = np.ones(np.shape(b.r))
-        v = Vector(np.array(X, X), np.array(Y, Y), np.array(Z, Z), np.array(Vx, Vx), np.array(Vy, Vy), np.array(Vz, Vz))
-
-        output_dict = Transform.Pol2CarVector(b.phi, b.Ephi, b.Er)
-        Ex = output_dict["Ex"]
-        Ey = output_dict["Ey"]
-
-        pol = Vector(np.array(X, X), np.array(Y, Y), np.array(Z, Z), np.array(real(Ex), imag(Ex)),
-                     np.array(real(Ey), imag(Ey)), np.array(np.zeros(np.shape(b.r)), np.zeros(np.shape(b.r))))
-
-        dr = b.r(1, 2) - b.r(1, 1)
-        dphi = b.phi(2, 1) - b.phi(1, 1)
-        P = np.dot(b.intensity(), b.r) * dr * dphi
-        P = np.array(np.divide(np.dot(P, np.square(np.abs(Ex))), (np.square(np.abs(Ex)) + np.square(np.abs(Ey)))),
-                     np.divide(np.dot(P, np.square(np.abs(Ey))), (np.square(np.abs(Ex)) + np.square(np.abs(Ey)))))
-
-        res = Ray(v, P, pol)
-
-        return res
-
-    @staticmethod
-    def beam2focus(b, f):
-        res = Ray.beam2rays(b)
-
-        r = np.sqrt(np.square(res.v.X) + np.square(res.v.Y))
-        theta = np.arcsin(r / f)
-
-        res = res.translate(Point(0 * r, 0 * r, -f * np.cos(theta)))
-
-        phi = np.arctan2(res.v.Y, res.v.X)
-        res = res.zrotation(-phi)
-
-        dp = Point(res.v.X, res.v.Y, res.v.Z)
-        res = res.translate(-dp)
-
-        res = res.yrotation(-theta)
-
-        res = res.translate(dp)
-
-        res = res.zrotation(phi)
-
-        return res

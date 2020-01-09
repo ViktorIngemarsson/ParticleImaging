@@ -65,7 +65,7 @@ class Vector(Point):
     def xrotation(self, phi):
         '''
         Rotates set of vectors V around x - axis
-        :param phi: angle phi[rad] rotated around x-axis
+        :param phi: angle phi[rad] rotated around x - axis
         :return: new set of vectors
         '''
         v = copy.deepcopy(self)
@@ -77,7 +77,7 @@ class Vector(Point):
     def yrotation(self, phi):
         '''
         Rotates set of vectors V around y - axis
-        :param phi: angle phi[rad] rotated around y-axis
+        :param phi: angle phi[rad] rotated around y - axis
         :return: new set of vectors
         '''
         v = copy.deepcopy(self)
@@ -89,7 +89,7 @@ class Vector(Point):
     def zrotation(self, phi):
         '''
         Rotates set of vectors V around z - axis
-        :param phi: angle phi[rad] rotated around z-axis
+        :param phi: angle phi[rad] rotated around z - axis
         :return: new set of vectors
         '''
         v = copy.deepcopy(self)
