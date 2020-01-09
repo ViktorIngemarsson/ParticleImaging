@@ -3,6 +3,7 @@ from GeneratingOneImage import GeneratingOneImage
 from TranslateCoordinates import TranslateCoordinates
 from generatingPerlinNoise import finalNoiseGeneration
 import matplotlib.cm as cm
+import matplotlib.pyplot as plt
 
 ################################################## Parameters ##########################################################
 
@@ -10,14 +11,14 @@ import matplotlib.cm as cm
 nm = 1.33  # Medium refractive index
 
 # Particle
-R = 0.00005  # Particle radius [m]
+R = 0.000005  # Particle radius [m]
 nP = 1.50  # Particle refractive index
-rho = 360 * 10e9
+rho = 360 * 10e11
 
 # Particle center [m]
 # The particle center is for now not changeable
-particle_center_x = -0.001/2
-particle_center_y = -0.001/2
+particle_center_x = 0.00003
+particle_center_y = 0.00003
 particle_center_z = 0
 
 # Polarization
@@ -34,7 +35,7 @@ scattering_number_of_iterations = 6
 # Camera
 lens_size_x = 0.001  # 1mm
 lens_size_y = 0.001
-resolution = 400  # Assuming quadratic image
+resolution = 1000  # Assuming quadratic image
 
 # Camera 2 relative camera 1
 xRotation = 90
@@ -56,9 +57,9 @@ print("Elapsed CPU time to generate one image:", t1_stop-t1_start)
 print(a)
 print(b)
 print(c)
-img = finalNoiseGeneration(1000)
-plt.imshow(img, cmap=cm.gray)
-plt.show()
+#img = finalNoiseGeneration(1000)
+#plt.imshow(img, cmap=cm.gray)
+#plt.show()
 ########################################################################################################################
 
 
