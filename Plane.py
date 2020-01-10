@@ -6,11 +6,20 @@ import copy
 
 class Plane:
     def __init__(self, point0, point1, point2):
+        '''
+        Generates a set of planes from three sets of points
+        :param point0: a point
+        :param point1: a point
+        :param point2: a point
+        '''
         self.p0 = point0
         self.p1 = point1
         self.p2 = point2
 
     def disp(self):
+        '''
+        Displays current state of the set of planes
+        '''
         print(self.p0.X)
         print(self.p0.Y)
         print(self.p0.Z)
@@ -22,13 +31,15 @@ class Plane:
         print(self.p2.Z)
 
     def translate(self, dp):
-        # TRANSLATE 3D translation of plane set
-        # PLt = TRANSLATE(PL,dP) translates set of planes PL by dP.
-        #   If dP is a Point, the translation corresponds to the
-        #   coordinates X, Y and Z.
-        #   If dP is a Vector, the translation corresponds to the
-        #   components Vx, Vy and Vz.
-        ## See also Plane, Point, Vector.
+        '''
+        translates set of planes PL by dP.
+        If dP is a Point, the translation corresponds to the...
+        coordinates X, Y and Z.
+        If dP is a Vector, the translation corresponds to the...
+        components Vx, Vy and Vz.
+        :param dp: point or vector
+        :return: translated set of planes
+        '''
         pl_t = copy.deepcopy(self)
         pl_t.p0 = pl_t.p0.translate(dp)
         pl_t.p1 = pl_t.p1.translate(dp)
@@ -36,6 +47,11 @@ class Plane:
         return pl_t
 
     def xrotation(self, phi):
+        '''
+        Rotates set of planes around x - axis
+        :param phi: angle phi[rad] rotated around x - axis
+        :return: new set of planes
+        '''
         pl_r = copy.deepcopy(self)
         pl_r.p0 = pl_r.p0.xrotation(phi)
         pl_r.p1 = pl_r.p1.xrotation(phi)
@@ -43,6 +59,11 @@ class Plane:
         return pl_r
 
     def yrotation(self, phi):
+        '''
+        Rotates set of planes around y - axis
+        :param phi: angle phi[rad] rotated around y - axis
+        :return: new set of planes
+        '''
         pl_r = copy.deepcopy(self)
         pl_r.p0 = pl_r.p0.yrotation(phi)
         pl_r.p1 = pl_r.p1.yrotation(phi)
@@ -50,6 +71,11 @@ class Plane:
         return pl_r
 
     def zrotation(self, phi):
+        '''
+        Rotates set of planes around z - axis
+        :param phi: angle phi[rad] rotated around z - axis
+        :return: new set of planes
+        '''
         pl_r = copy.deepcopy(self)
         pl_r.p0 = pl_r.p0.zrotation(phi)
         pl_r.p1 = pl_r.p1.zrotation(phi)
@@ -57,18 +83,21 @@ class Plane:
         return pl_r
 
     def numel(self):
+        '''
+        Returns the number of planes in set self.
+        :return: Number of planes in set
+        '''
         return self.p0.size()
 
     def size(self, varargin=None):
-        # SIZE Size of the plane set
-        #
-        # S = SIZE(PL) returns a two-element row vector with the number
-        #   of rows and columns in the plane set PL.
-        #
-        # S = SIZE(PL,DIM) returns the length of the dimension specified
-        #   by the scalar DIM in the plane set P .
-        #
-        # See also Plane.
+        '''
+        Returns a two-element row vector with the number...
+        of rows and columns in the plane set self.
+        If given argument returns the length of the dimension specified...
+        by the scalar DIM in the plane set self.
+        :param varargin: integer of which dim
+        :return:length of specified dimension
+        '''
         if varargin is None:
             s = self.p0.size()
         else:
@@ -76,33 +105,32 @@ class Plane:
         return s
 
     def intersectionpoint(self, d):
-        # INTERSECTIONPOINT Intersection point between plane and line/vector/ray
-        #
-        # P = INTERSECTIONPOINT(PL,D) calculates intersection Points
-        #   between a set of lines (or vectors) D and the set of planes PL.
-        #   If D is parallel to PL, the coordiantes of P are NaN.
-        #
-        # See also Plane, Point, SLine, Vector, Ray.
+        '''
+        Calculates intersection Points between a set of lines...
+        (or vectors) d and the set of planes self.
+        If d is parallel to self, the coordiantes of self are NaN.
+        :param d: lines or vectors
+        :return: intersecting points
+        '''
         pl = copy.deepcopy(self)
-
         if isinstance(d, SLine):
             ln = copy.deepcopy(d)
         else:
             ln = d.toline()
-
         c1 = pl.p1.minus(pl.p0)
         c2 = pl.p2.minus(pl.p0)
-
         c0 = c1.mtimes(c2)
-
         c = ln.p2.minus(ln.p1)
-
         t = c0.times(pl.p0.minus(ln.p1)) / (c0.times(c))  # pl.p0.minus(ln.p1)   (c0.mtimes(c))
-
-        # p = np.add(ln.p1, np.multiply(t, c))
         return ln.p1.plus(c.times(t))
 
     def perpline(self, p):
+        '''
+        Calculates the line set ln perpendicular to the...
+        plane set self and passing by the point set p.
+        :param p: set of points
+        :return ln: line set
+        '''
         # PERPLINE Line perpendicular to plane passing by point
         #
         # LN = PERPLINE(PL,P) calculates the line set LN perpendicular
@@ -127,13 +155,13 @@ class Plane:
         return ln
 
     def contains(self, p, ln):
-        # CONTAINS Plane containing point and line (Static)
-        #
-        # PL = CONTAINS(P,LN) calculates plane set PL contianing
-        #   the point set P and the line set LN.
-        #
-        # See also Plane, Point, SLine.
-
+        '''
+        Calculates plane set PL containing..
+        the point set p and the line set ln.
+        :param p: point set
+        :param ln: line set
+        :return: new plane set
+        '''
         plp0 = Point(np.multiply(p.X, np.ones(ln.size())), np.multiply(p.Y, np.ones(ln.size())),
                      np.multiply(p.Z, np.ones(ln.size())))
         plp1 = Point(np.multiply(ln.p1.X, np.ones(p.size())), np.multiply(ln.p1.Y, np.ones(p.size())),
@@ -141,17 +169,16 @@ class Plane:
         plp2 = Point(np.multiply(ln.p2.X, np.ones(p.size())), np.multiply(ln.p2.Y, np.ones(p.size())),
                      np.multiply(ln.p2.Z, np.ones(p.size())))
         pl = Plane(plp0, plp1, plp2)
-
         return pl
 
     def perpto(self, p):
-        # PERPTO Plane perpendicular to line and passing by point (Static)
-        #
-        # PL = PERPTO(LN,P) calculates plane set PL perpendicular
-        #   to line set LN and passing by point set P.
-        #   LN and P must have the same size, or just must be a singleton.
-        #
-        # See also Plane, Sline, Point.
+        '''
+        Calculates plane set pl perpendicular
+        to line set LN and passing by point set P.
+        LN and P must have the same size, or just must be a singleton.
+        :param p: point set
+        :return pl: new plane set
+        '''
 
         ln = copy.deepcopy(self)
 

@@ -91,10 +91,10 @@ class Point:
     def size(self, varargin=None):
         '''
         Returns a two-element row vector with the number...
-        of rows and columns in the point set P.
+        of rows and columns in the point set self.
         If given argument returns the length of the dimension specified...
-        by the scalar DIM in the point set P.
-        :param varargin:
+        by the scalar DIM in the point set self.
+        :param varargin: integer of which dim
         :return:length of specified dimension
         '''
         if varargin != None:
