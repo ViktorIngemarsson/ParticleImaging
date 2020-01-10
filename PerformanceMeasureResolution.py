@@ -3,6 +3,7 @@ from GeneratingOneImage import GeneratingOneImage
 from TranslateCoordinates import TranslateCoordinates
 from GeneratingNoise import FinalNoiseGeneration
 import matplotlib.pyplot as plt
+import numpy as np
 
 """
 Example script that generates three images, from three cameras, and plots them. Parameters are explained and specified
@@ -10,13 +11,13 @@ Example script that generates three images, from three cameras, and plots them. 
 """
 
 # Refractive index of the medium around the particle (ie. air).
-n_m = 1.0
-
-# Refractive index of particle medium (ie. water).
-n_p = 1.35
+nm = 1.33
 
 # Particle radius [m].
-r = 0.000002
+R = 0.000002
+
+# Refractive index of particle medium (ie. water).
+nP = 1.50
 
 # Ray density per square meter.
 rho = 1e14
@@ -44,36 +45,46 @@ noise_intensity = 0.2
 lens_size = 0.001
 
 # Resolution of the generated image. Assuming quadratic image. Number of pixels in image becomes resolution*resolution.
-resolution = 400
+resolution = [100, 200, 400, 800, 1600, 3200]
+reruns = 5
 
 # Number of cameras to capture images of droplet.
 n_of_cameras = 3
 
 # The rotation required to flip the coordinates from one camera to the other.
-x_rotation = [0, 120, 30]
-y_rotation = [0, 0, 115]
+xRotation = [0, 120, 30]
+yRotation = [0, 0, 115]
 
 # Generate images and plot them.
 image = []
-f, axarr = plt.subplots(1, 3)
+#f, axarr = plt.subplots(1, 3)
 previous_coordinates = [particle_center_x, particle_center_y, particle_center_z]
-
+indexing = 0
+totalTimeAverage = np.zeros(7)
+timeAverage = 0
 # Images from the cameras
-for camera in range(n_of_cameras):
-    t1_start = process_time()  # Timing the program for one image
-    [new_x, new_y, new_z] = TranslateCoordinates(previous_coordinates[0], previous_coordinates[1],
-                                                 previous_coordinates[2], x_rotation[camera], y_rotation[camera])
-    image.append(GeneratingOneImage(new_x, new_y, r, rho, n_m, n_p, pol_X, pol_Y, pol_Z, pol_Vx, pol_Vy, pol_Vz,
-                                    resolution, lens_size, scattering_max_number_of_iterations) + \
-                 FinalNoiseGeneration(resolution, noise_intensity))
-    # Timer
-    t1_stop = process_time()
-    print("Elapsed CPU time (s) to generate image {}:".format(camera + 1), t1_stop - t1_start)
+for iResolution in resolution:
+    indexing = indexing + 1
+    for iRerun in range(reruns):
+        for camera in range(n_of_cameras):
+            t1_start = process_time()  # Timing the program for one image
+            [new_x, new_y, new_z] = TranslateCoordinates(previous_coordinates[0], previous_coordinates[1],
+                                                 previous_coordinates[2], xRotation[camera], yRotation[camera])
+            image.append(GeneratingOneImage(new_x, new_y, R, rho, nm, nP, pol_X, pol_Y, pol_Z, pol_Vx, pol_Vy, pol_Vz,
+                                    iResolution, lens_size, scattering_max_number_of_iterations) + \
+                 FinalNoiseGeneration(iResolution, noise_intensity))
+            t1_stop = process_time()
+            timeAverage = timeAverage + (t1_stop - t1_start)/3
 
-    previous_coordinates = [new_x, new_y, new_z]
-    axarr[camera].imshow(image[camera], cmap='gray_r', vmin=0, vmax=1)
-    axarr[camera].axis('off')
-    axarr[camera].title.set_text('Camera{} '.format(camera + 1))
+            previous_coordinates = [new_x, new_y, new_z]
 
+    totalTimeAverage[indexing] = timeAverage/reruns
+    timeAverage = 0
+
+print(totalTimeAverage)
+
+plt.plot(resolution, totalTimeAverage[1:7])
+plt.xlabel('Resolution')
+plt.ylabel('Time to generate one observation [s]')
 plt.show()
 

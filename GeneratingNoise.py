@@ -63,6 +63,8 @@ def FinalNoiseGeneration(resolution, noiseIntensity):
     img = Generate2DPerlinNoise(resolution, resolution)
     img2 = Generate2DPerlinNoise(resolution, int(resolution/2))
     img3 = Generate2DPerlinNoise(resolution, int(resolution/100))
-    img = img + img2 + img3
+    rs = np.random.RandomState()
+    shot_noise = rs.poisson(10000, (resolution, resolution))
+    img = img + img2 + img3 + shot_noise
     img = (img - img.min())/(img.max()-img.min())*noiseIntensity
     return(img)
