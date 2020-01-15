@@ -3,6 +3,7 @@ from GeneratingOneImage import GeneratingOneImage
 from TranslateCoordinates import TranslateCoordinates
 from GeneratingNoise import FinalNoiseGeneration
 import matplotlib.pyplot as plt
+import numpy as np
 
 """
 Example script that generates three images, from three cameras, and plots them. Parameters are explained and specified
@@ -50,8 +51,8 @@ resolution = 400
 n_of_cameras = 3
 
 # The rotation required to flip the coordinates from one camera to the other.
-x_rotation = [0, 120, 30]
-y_rotation = [0, 0, 115]
+x_rotation = [0, np.pi/3, np.pi/6]
+y_rotation = [0, 0, np.pi/7]
 
 # Generate images and plot them.
 image = []
